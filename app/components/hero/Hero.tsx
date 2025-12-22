@@ -1,16 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import MaskReveal from '../ui/MaskReveal';
 import TechSlider from '../ui/TechSlider';
 import { orbitron, colors, shadows, gradientStyle } from '../../lib/theme';
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+
+gsap.registerPlugin(SplitText);
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
 
+    const titleRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     setMounted(true);
+
+    const split = new SplitText(".title", { type: "chars" });
+    gsap.from(split.chars, {
+      opacity: 0,
+      x: 50,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "back"
+    });
+
+     gsap.from(titleRef.current, {
+          opacity:0,
+          x:-100,
+          duration: 0.9,
+          ease: 'none',
+        });
   }, []);
+
 
   return (
     <div className="w-full h-full overflow-x-hidden">
@@ -24,31 +46,41 @@ export default function Hero() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 min-h-[85vh] flex items-center pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8">
+      <section className="relative z-10 min-h-[85vh] flex items-center">
+        <div className="max-w-7xl mx-auto px-4 mt-16 w-full sm:px-6 md:mt-16">
           <div className="flex flex-col lg:flex-row justify-center lg:justify-between gap-8 lg:gap-16">
             {/* Left Content */}
-            <div className="w-full lg:flex-1 text-center lg:text-left lg:max-w-xl lg:pt-12">
+            <div className="w-full lg:flex-1 text-center lg:text-left lg:max-w-xl lg:pt-12 order-2 lg:order-1">
 
-              <h1 className={`text-3xl tracking-tight font-extrabold text-gray-400 sm:text-4xl md:text-5xl lg:text-6xl mb-4 ${orbitron.className}`}>
+              <h1 className={`text-3xl tracking-tight font-extrabold text-gray-400 sm:text-4xl md:text-5xl lg:text-6xl mb-4 ${orbitron.className} title`}>
                 <span className="block">Architecting the</span>
-                <span 
-                  className="block text-transparent bg-clip-text neon-text glitch-effect" 
+               
+              </h1>
+
+              <h1 ref={titleRef} className={`text-3xl tracking-tight font-extrabold text-gray-400 sm:text-4xl md:text-5xl lg:text-6xl mb-4 ${orbitron.className}`}>
+                 <span 
+                  className="block neon-text glitch-effect" 
                   data-text="Digital Future"
-                  style={{ backgroundImage: gradientStyle }}
+                  style={{ 
+                    backgroundImage: gradientStyle,
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    color: 'transparent'
+                  }}
                 >
                   Digital Future
                 </span>
               </h1>
 
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 sm:mt-3 sm:text-base md:text-lg lg:mx-0 font-light border-l-2 pl-4" style={{ borderColor: colors.green }}>
+              <p className="mt-2 text-sm text-gray-600  max-w-xl mx-auto dark:text-gray-400 sm:mt-3 sm:text-base md:text-lg lg:mx-0 font-light border-l-2 pl-4" style={{ borderColor: colors.green }}>
                 Frontend engineer specializing in high-performance interfaces and immersive web experiences. Merging clean code with futuristic design aesthetics.
               </p>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <a 
                   className={`group relative px-8 py-3 text-background-dark font-bold text-lg rounded-sm overflow-hidden ${orbitron.className}`}
-                  style={{ backgroundColor: colors.green, boxShadow: shadows.md }}
+                  style={{ background: gradientStyle, boxShadow: shadows.md }}
                   href="#projects"
                 >
                   <div className="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
@@ -74,36 +106,31 @@ export default function Hero() {
               </div>
 
               {/* Stats */}
-              <div className="mt-8 grid grid-cols-3 gap-4 border-t pt-6" style={{ borderColor: `${colors.cyan}33` }}>
+              <div className="grid grid-cols-3 gap-4 border-t pt-6 sm:mt-0" style={{ borderColor: `${colors.cyan}33` }}>
                 <div>
-                  <p className={`text-3xl font-bold text-gray-500 ${orbitron.className}`}>5+</p>
+                  <p className={`text-3xl font-bold text-gray-400 ${orbitron.className}`}>5+</p>
                   <p className="text-xs uppercase tracking-widest" style={{ color: colors.green }}>Years Exp</p>
                 </div>
                 <div>
-                  <p className={`text-3xl font-bold text-gray-500 ${orbitron.className}`}>42</p>
+                  <p className={`text-3xl font-bold text-gray-400 ${orbitron.className}`}>42</p>
                   <p className="text-xs uppercase tracking-widest" style={{ color: colors.mint }}>Projects</p>
                 </div>
                 <div>
-                  <p className={`text-3xl font-bold text-gray-500 ${orbitron.className}`}>100%</p>
+                  <p className={`text-3xl font-bold text-gray-400 ${orbitron.className}`}>100%</p>
                   <p className="text-xs uppercase tracking-widest" style={{ color: colors.cyan }}>Uptime</p>
                 </div>
               </div>
             </div>
 
             {/* Right Content - Image */}
-            <div className="flex-shrink-0 flex justify-center lg:justify-start">
+            <div className="flex-shrink-0 flex justify-center lg:justify-start order-1 lg:order-2">
               <div className="relative w-[300px] h-[300px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px]">
-                {/* Orbital Rings 
-                <div className="absolute inset-0 border rounded-full animate-[spin_10s_linear_infinite]" style={{ borderColor: `${colors.green}33` }}></div>
-                <div className="absolute inset-[10%] border border-dashed rounded-full animate-[spin_15s_linear_infinite_reverse]" style={{ borderColor: `${colors.mint}4D` }}></div>
-                <div className="absolute inset-[20%] border rounded-full animate-[spin_20s_linear_infinite]" style={{ borderColor: `${colors.cyan}1A` }}></div>
-*/}
-                {/* Main Image Container */}
+            
                 <div className="relative h-full w-full rounded-full border-4 bg-surface-dark group" style={{ borderColor: `${colors.green}4D`, boxShadow: shadows.glow }}>
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-top from-background-dark via-transparent to-transparent z-10 pointer-events-none"></div>
 
-                  <div className="absolute inset-0 flex justify-center">
+                  <div className="absolute inset-0 flex justify-center" style={{ touchAction: 'pan-y' }}>
                     <MaskReveal/>
                   </div>
                   {/* Mask Overlay SVG
@@ -177,8 +204,8 @@ export default function Hero() {
         }
 
         .bg-grid-pattern {
-          background-image: linear-gradient(to right, #1f2937 1px, transparent 1px), 
-                            linear-gradient(to bottom, #1f2937 1px, transparent 1px);
+          background-image: linear-gradient(to right, #1f2937 2px, transparent 2px), 
+                            linear-gradient(to bottom, #1f2937 2px, transparent 2px);
         }
       `}</style>
     </div>

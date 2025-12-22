@@ -6,28 +6,28 @@ import { orbitron, colors, shadows } from '../../lib/theme';
 const Navbar = () => {
     return(
         <nav 
-            className="fixed w-full z-50 top-0 left-0 border-b backdrop-blur-md bg-white/70 dark:bg-background-dark/70"
+            className="fixed  w-full z-50 top-0 left-0 border-b backdrop-blur-md bg-white/70 dark:bg-background-dark/70 sm:py-2"
             style={{ 
                 borderColor: `${colors.green}33`,
                 boxShadow: shadows.sm 
             }}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
+            <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 ">
+                <div className="flex items-center justify-between h-full">
                     {/* Logo */}
-                    <div className="flex-shrink-0 flex items-center space-x-2 cursor-pointer group">
+                    <div className="flex-shrink-0 flex items-center space-x-2 cursor-pointer group sm:py-1">
                         <Image 
                             src="/logo.svg" 
                             alt="Logo" 
-                            width={40} 
-                            height={40}
+                            width={32} 
+                            height={32}
                             className="transition-transform duration-500 group-hover:rotate-180"
                         />
                         <span 
                             className={`font-bold text-xl tracking-widest transition-colors ${orbitron.className}`}
                             style={{ color: colors.green }}
                         >
-                            NEXUS<span className="text-gray-900 dark:text-white">.DEV</span>
+                            BLASZ<span className="text-gray-400 ">.DEV</span>
                         </span>
                     </div>
 

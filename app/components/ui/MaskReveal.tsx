@@ -6,7 +6,7 @@ import { useRef, useState, Suspense, useMemo, useCallback, memo } from 'react';
 import * as THREE from 'three';
 
 // Precargar el modelo con DracoLoader
-useGLTF.preload('/mask.glb');
+useGLTF.preload('/mask2.glb');
 
 // Constantes configurables para el efecto
 const SCROLL_SPEED = 0.08; // Velocidad del barrido (menor = más lento)
@@ -250,6 +250,7 @@ export default function MaskReveal() {
       {/* Canvas 3D con transparencia */}
       <div 
         className="absolute inset-0"
+        style={{ touchAction: 'pan-y' }}
         onPointerMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           mouseXRef.current = (e.clientX - rect.left) / rect.width;
@@ -262,7 +263,7 @@ export default function MaskReveal() {
         <Canvas 
           camera={{ position: [0, 0, 5], fov: 50 }}
           gl={{ alpha: true }}
-          style={{ background: 'transparent', width: '100%', height: '100%'}}
+          style={{ background: 'transparent', width: '100%', height: '100%', touchAction: 'pan-y' }}
         >
           <ambientLight intensity={1} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
