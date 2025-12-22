@@ -28,16 +28,16 @@ export default function Hero() {
      gsap.from(titleRef.current, {
           opacity:0,
           x:-100,
-          duration: 0.9,
-          ease: 'none',
+          duration: 1.5,
+          ease: 'easeOut',
         });
   }, []);
 
 
   return (
-    <div className="w-full h-full overflow-x-hidden">
+    <div className="hero-container relative w-full">
       {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none h-min-screen">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] dark:opacity-[0.1] bg-grid"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-transparent to-background-light dark:to-background-dark"></div>
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full mix-blend-screen"></div>
@@ -46,9 +46,9 @@ export default function Hero() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 min-h-[85vh] flex items-center">
-        <div className="max-w-7xl mx-auto px-4 mt-16 w-full sm:px-6 md:mt-16">
-          <div className="flex flex-col lg:flex-row justify-center lg:justify-between gap-8 lg:gap-16">
+      <section className="relative z-10 min-h-[85vh] flex flex-col items-center">
+        <div className="max-w-7xl mx-auto px-4 mt-16 w-full sm:px-6 md:mt-16 flex-1 flex items-center">
+          <div className="flex flex-col lg:flex-row justify-center lg:justify-between gap-6 lg:gap-16 w-full">
             {/* Left Content */}
             <div className="w-full lg:flex-1 text-center lg:text-left lg:max-w-xl lg:pt-12 order-2 lg:order-1">
 
@@ -73,7 +73,7 @@ export default function Hero() {
                 </span>
               </h1>
 
-              <p className="mt-2 text-sm text-gray-600  max-w-xl mx-auto dark:text-gray-400 sm:mt-3 sm:text-base md:text-lg lg:mx-0 font-light border-l-2 pl-4" style={{ borderColor: colors.green }}>
+              <p className="mt-2 text-sm text-gray-700 font-bold max-w-xl mx-auto dark:text-gray-400 sm:mt-3 sm:text-base md:text-lg lg:mx-0 font-light border-l-2 pl-4" style={{ borderColor: colors.green }}>
                 Frontend engineer specializing in high-performance interfaces and immersive web experiences. Merging clean code with futuristic design aesthetics.
               </p>
 
@@ -106,7 +106,7 @@ export default function Hero() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 border-t pt-6 sm:mt-0" style={{ borderColor: `${colors.cyan}33` }}>
+              <div className="grid grid-cols-3 gap-4 border-t py-8 sm:mt-0" style={{ borderColor: `${colors.cyan}33` }}>
                 <div>
                   <p className={`text-3xl font-bold text-gray-400 ${orbitron.className}`}>5+</p>
                   <p className="text-xs uppercase tracking-widest" style={{ color: colors.green }}>Years Exp</p>
@@ -133,21 +133,7 @@ export default function Hero() {
                   <div className="absolute inset-0 flex justify-center" style={{ touchAction: 'pan-y' }}>
                     <MaskReveal/>
                   </div>
-                  {/* Mask Overlay SVG
-                  <div className="absolute bottom-[15%] left-1/2 -translate-x-1/2 w-[60%] h-[40%] pointer-events-none z-20 mix-blend-screen opacity-90">
-                    <svg 
-                      className="w-full h-full drop-shadow-[0_0_10px_rgba(0,255,157,0.8)]" 
-                      fill="none" 
-                      viewBox="0 0 200 150" 
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M40 20 L60 80 L140 80 L160 20" fill="rgba(0, 255, 157, 0.1)" stroke="#00ff9d" strokeWidth="2"></path>
-                      <path d="M70 90 L130 90 L100 130 Z" fill="none" stroke="#00ff9d" strokeWidth="3"></path>
-                      <circle className="animate-pulse" cx="100" cy="110" r="15" stroke="#00ff9d" strokeWidth="2" fill="none"></circle>
-                      <line stroke="#00b8ff" strokeWidth="2" x1="20" x2="40" y1="40" y2="80"></line>
-                      <line stroke="#00b8ff" strokeWidth="2" x1="180" x2="160" y1="40" y2="80"></line>
-                    </svg>
-                  </div> */}
+                  
                 </div>
 
                 {/* HUD Elements */}
@@ -165,49 +151,9 @@ export default function Hero() {
             </div>
           </div>
         </div>
+
+        <TechSlider />
       </section>
-
-      <TechSlider />
-
-      <style jsx>{`
-        .scan-line {
-          width: 100%;
-          height: 100px;
-          z-index: 10;
-          background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0, 255, 157, 0.1) 50%, rgba(0,0,0,0) 100%);
-          opacity: 0.1;
-          background-size: 100% 2px;
-          animation: scanline 10s linear infinite;
-          pointer-events: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-        }
-
-        @keyframes scanline {
-          0% { transform: translateY(-100vh); }
-          100% { transform: translateY(100vh); }
-        }
-
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        .glitch-effect {
-          position: relative;
-        }
-
-        .bg-grid {
-          background-size: 40px 40px;
-          mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
-        }
-
-        .bg-grid-pattern {
-          background-image: linear-gradient(to right, #1f2937 2px, transparent 2px), 
-                            linear-gradient(to bottom, #1f2937 2px, transparent 2px);
-        }
-      `}</style>
     </div>
   );
 }
