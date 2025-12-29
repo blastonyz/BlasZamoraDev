@@ -1,9 +1,14 @@
 'use client';
 
-export default function Projects() {
+interface ProjectsProps {
+  contentRef: React.RefObject<HTMLDivElement | null>;
+}
+
+export default function Projects({ contentRef }: ProjectsProps) {
+    console.log(contentRef)
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="container mx-auto px-6">
+      <div ref={contentRef} className="container mx-auto px-6">
         <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
           Projects
         </h2>

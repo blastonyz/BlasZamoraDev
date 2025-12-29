@@ -66,7 +66,7 @@ const Skills = () => {
             />
 
             {/* Overlay oscuro */}
-            <div className="absolute inset-0 bg-black/30 z-[1]"></div>
+            <div className="absolute inset-0 bg-black/20 z-[1]"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 py-16 min-h-screen flex flex-col justify-center">
                 {/* Title */}
