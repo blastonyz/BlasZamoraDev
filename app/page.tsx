@@ -19,19 +19,27 @@ export default function Home() {
   const threeSceneRef = useRef<HTMLDivElement>(null);
   const threeSceneContentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
   const skillsEndTriggerRef = useRef<HTMLDivElement>(null);
   const projectsEndTriggerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar mobile solo en cliente
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   useEffect(() => {
     if (isLoading) return; 
 
     const ctx = gsap.context(() => {
       // Detect if mobile
-      const isMobile = window.innerWidth < 768;
+      const isMobileView = window.innerWidth < 768;
+      const bgRef = isMobileView ? imageRef : videoRef;
       
       // Set initial states
-      gsap.set(videoRef.current, { opacity: 0 });
+      gsap.set(bgRef.current, { opacity: 0 });
       gsap.set(projectsRef.current, { opacity: 0, scale: 0.9 });
       gsap.set(projectsContentRef.current, { 
         opacity: 0, 
@@ -45,7 +53,7 @@ export default function Home() {
       // Skills sliding up over Hero
       gsap.fromTo(
         skillsRef.current,
-        { y: isMobile? '120vh':'100vh' },
+        { y: isMobileView? '120vh':'100vh' },
         {
           y: '-120vh',
           ease: "none",
@@ -100,21 +108,21 @@ export default function Home() {
         y: '-110vh',
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: isMobile ? "top+=50vh bottom" : "top+=20vh bottom",
-          end: isMobile ? "top+=250vh bottom" : "top+=180vh bottom",
+          start: isMobileView ? "top+=50vh bottom" : "top+=20vh bottom",
+          end: isMobileView ? "top+=250vh bottom" : "top+=180vh bottom",
           scrub: true,
         },
       });
 
-      // Background video fade in
+      // Background video/image fade in
       // Mobile: starts later and completes fully before Projects
-      gsap.to(videoRef.current, {
+      gsap.to(bgRef.current, {
         opacity: 1,
         ease: "power2.out",
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: isMobile ? "top+=80vh bottom" : "top+=20vh bottom",
-          end: isMobile ? "top+=200vh bottom" : "top+=100vh bottom",
+          start: isMobileView ? "top+=80vh bottom" : "top+=20vh bottom",
+          end: isMobileView ? "top+=200vh bottom" : "top+=100vh bottom",
           scrub: true,
         },
       });
@@ -127,8 +135,8 @@ export default function Home() {
         ease: "power2.out",
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: isMobile ? "top+=100vh bottom" : "top+=1vh bottom",
-          end: isMobile ? "top+=250vh bottom" : "top+=120vh bottom",
+          start: isMobileView ? "top+=100vh bottom" : "top+=1vh bottom",
+          end: isMobileView ? "top+=250vh bottom" : "top+=120vh bottom",
           scrub: true,
           onEnter: () => {
             if (projectsRef.current) {
@@ -153,7 +161,7 @@ export default function Home() {
       // Watches for when video is fully visible
       ScrollTrigger.create({
         trigger: skillsEndTriggerRef.current,
-        start: isMobile ? "top+=200vh bottom" : "top+=80vh bottom",
+        start: isMobileView ? "top+=200vh bottom" : "top+=80vh bottom",
         onEnter: () => {
           gsap.to(projectsContentRef.current, {
             opacity: 1,
@@ -176,18 +184,18 @@ export default function Home() {
       });
 
       // Transition from Projects to ThreeScene (Section 4)
-      // Escalado concatenado con timeline - escala el VIDEO, no el contenido
+      // Escalado concatenado con timeline - escala el VIDEO/IMAGEN, no el contenido
       const projectsToThreeTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: projectsEndTriggerRef.current,
-          start: "top+=30vh bottom",
-          end: isMobile ? "top+=80vh bottom" : "top+=50vh bottom",
+          start: "top bottom",
+          end: isMobileView ? "top bottom" : "top bottom",
           scrub: true,
         },
       });
 
       projectsToThreeTimeline
-        .to(videoRef.current,
+        .to(bgRef.current,
           { scale: 4, ease: "power2.in", duration: 2}
         )
         .to(projectsRef.current,
@@ -206,8 +214,8 @@ export default function Home() {
         ease: "power2.out",
         scrollTrigger: {
           trigger: projectsEndTriggerRef.current,
-          start: isMobile ? "top+=40vh bottom" : "top+=25vh bottom",
-          end: isMobile ? "top+=80vh bottom" : "top+=50vh bottom",
+          start: isMobileView ? "top+=40vh bottom" : "top+=25vh bottom",
+          end: isMobileView ? "top+=80vh bottom" : "top+=50vh bottom",
           scrub: true,
           onEnter: () => {
             if (threeSceneRef.current) {
@@ -232,17 +240,30 @@ export default function Home() {
 
   return (
     <div className="bg-white font-sans overflow-hidden">
-      {/* Background video - visible on third transition */}
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="fixed inset-0 z-0 pointer-events-none w-full h-full object-cover"
-      >
-        <source src="/back-city.mp4" type="video/mp4" />
-      </video>
+      {/* Background video/image - visible on third transition */}
+      {isMobile ? (
+        <div 
+          ref={imageRef}
+          className="fixed inset-0 z-0 pointer-events-none w-full h-full"
+          style={{
+            backgroundImage: 'url(/video-frame.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="fixed inset-0 z-0 pointer-events-none w-full h-full object-cover"
+        >
+          <source src="/back-city.mp4" type="video/mp4" />
+        </video>
+      )}
 
       <main className="w-full relative">
         {/* Hero Section */}
