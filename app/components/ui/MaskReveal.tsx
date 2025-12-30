@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei';
-import { useRef, useState, Suspense, useMemo, useCallback, memo } from 'react';
+import { useRef, useState, Suspense, useMemo, useCallback, memo, useEffect } from 'react';
 import * as THREE from 'three';
 
 // Precargar el modelo con DracoLoader
@@ -226,12 +226,12 @@ export default function MaskReveal() {
   const [showMask, setShowMask] = useState(false);
   
   // Delay de 2 segundos antes de mostrar la máscara
-  useState(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setShowMask(true);
     }, 2000); // 2 segundos de delay
     return () => clearTimeout(timer);
-  });
+  }, []);
   
   return (
     <div className="w-full h-full relative">

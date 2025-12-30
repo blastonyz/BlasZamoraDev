@@ -11,26 +11,46 @@ gsap.registerPlugin(SplitText);
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
-
-    const titleRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     setMounted(true);
 
-    const split = new SplitText(".title", { type: "chars" });
-    gsap.from(split.chars, {
-      opacity: 0,
-      x: 50,
-      stagger: 0.1,
-      duration: 0.6,
-      ease: "back"
+    const ctx = gsap.context(() => {
+      const split = new SplitText(".title", { type: "chars" });
+      
+      gsap.fromTo(split.chars, 
+        {
+          opacity: 0,
+          y: 20
+        },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.03,
+          duration: 0.3,
+          ease: "power1.out",
+          force3D: true
+        }
+      );
+
+      gsap.fromTo(titleRef.current,
+        {
+          opacity: 0,
+          y: 20
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          delay: 0.2,
+          ease: "power1.out",
+          force3D: true
+        }
+      );
     });
 
-     gsap.from(titleRef.current, {
-          opacity:0,
-          x:-100,
-          duration: 1.5,
-          ease: 'easeOut',
-        });
+    return () => ctx.revert();
   }, []);
 
 

@@ -33,7 +33,7 @@ export default function TechSlider() {
 
   return (
     <div 
-      className="w-screen max-w-full py-3 overflow-x-hidden relative z-30 m-2" 
+      className="w-screen max-w-full py-3 overflow-x-hidden relative z-50 m-3 sm:m-0" 
       style={{ 
         backgroundColor: `${colors.green}0D`, 
         borderTop: `1px solid ${colors.green}33`, 

@@ -28,7 +28,7 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
       // Logo explodes to cover entire screen
       gsap.to(logoRef.current, {
         scale: 25,
-        duration: 0.5,
+        duration: 0.4,
         ease: "power2.in",
       });
 

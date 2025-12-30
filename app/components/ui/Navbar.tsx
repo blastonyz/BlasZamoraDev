@@ -6,7 +6,7 @@ import { orbitron, colors, shadows } from '../../lib/theme';
 const Navbar = () => {
     return(
         <nav 
-            className="fixed  w-full z-50 top-0 left-0 border-b backdrop-blur-md bg-white/70 dark:bg-background-dark/70 sm:py-2"
+            className="fixed  w-full z-50 top-0 left-0 border-b backdrop-blur-md bg-white/30 dark:bg-background-dark/30 sm:py-2"
             style={{ 
                 borderColor: `${colors.green}33`,
                 boxShadow: shadows.sm 

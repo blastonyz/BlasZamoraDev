@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hero from "./components/hero/Hero";
 import Skills from "./components/skills/Skills";
 import Projects from "./components/projects/Projects";
+import ThreeScene from "./components/threescene/ThreeScene";
 import LoadingScreen from "./components/LoadingScreen";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,14 +16,20 @@ export default function Home() {
   const skillsRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const projectsContentRef = useRef<HTMLDivElement>(null);
+  const threeSceneRef = useRef<HTMLDivElement>(null);
+  const threeSceneContentRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const skillsEndTriggerRef = useRef<HTMLDivElement>(null);
+  const projectsEndTriggerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (isLoading) return; // Don't initialize animations until loading is complete
+    if (isLoading) return; 
 
     const ctx = gsap.context(() => {
+      // Detect if mobile
+      const isMobile = window.innerWidth < 768;
+      
       // Set initial states
       gsap.set(videoRef.current, { opacity: 0 });
       gsap.set(projectsRef.current, { opacity: 0, scale: 0.9 });
@@ -32,13 +39,15 @@ export default function Home() {
         skewY: 5,
         skewX: -3
       });
+      gsap.set(threeSceneRef.current, { opacity: 0, scale: 1, visibility: 'hidden' });
+      gsap.set(threeSceneContentRef.current, { opacity: 0 });
 
       // Skills sliding up over Hero
       gsap.fromTo(
         skillsRef.current,
-        { y: '110vh' },
+        { y: isMobile? '120vh':'100vh' },
         {
-          y: '-110vh',
+          y: '-120vh',
           ease: "none",
           scrollTrigger: {
             trigger: heroRef.current,
@@ -66,7 +75,7 @@ export default function Home() {
         visibility: 'hidden',
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: "top bottom",
+          start: "top+=30vh bottom",
           end: "top bottom",
           scrub: false,
           onEnter: () => {
@@ -82,56 +91,49 @@ export default function Home() {
         },
       });
 
-      // Skills scale down and fade out during third transition (0-40% of scroll)
+      // Skills scale down and fade out during third transition
+      // Mobile: longer scroll distance for scaling
       gsap.to(skillsRef.current, {
         scale: 0.5,
-        opacity: 0,
+        opacity: 0.3,
         ease: "power2.out",
         y: '-110vh',
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: "top+=100vh bottom",
-          end: "top+=450vh bottom",
+          start: isMobile ? "top+=50vh bottom" : "top+=20vh bottom",
+          end: isMobile ? "top+=250vh bottom" : "top+=180vh bottom",
           scrub: true,
         },
       });
 
-      // Background video fade in: starts after Skills fully fades (with margin)
+      // Background video fade in
+      // Mobile: starts later and completes fully before Projects
       gsap.to(videoRef.current, {
         opacity: 1,
         ease: "power2.out",
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: "top+=50vh bottom",
-          end: "top top",
+          start: isMobile ? "top+=80vh bottom" : "top+=20vh bottom",
+          end: isMobile ? "top+=200vh bottom" : "top+=100vh bottom",
           scrub: true,
         },
       });
 
-      // Projects transition: starts after Skills fully fades (with margin)
+      // Projects transition
+      // Mobile: delayed start for later appearance
       gsap.to(projectsRef.current, {
         opacity: 1,
         scale: 1,
         ease: "power2.out",
         scrollTrigger: {
           trigger: skillsEndTriggerRef.current,
-          start: "top+=1vh bottom",
-          end: "top top",
+          start: isMobile ? "top+=100vh bottom" : "top+=1vh bottom",
+          end: isMobile ? "top+=250vh bottom" : "top+=120vh bottom",
           scrub: true,
           onEnter: () => {
             if (projectsRef.current) {
               projectsRef.current.style.pointerEvents = 'auto';
             }
-            // Trigger content animation after Projects becomes visible
-            gsap.to(projectsContentRef.current, {
-              opacity: 1,
-              y: 0,
-              skewY: 0,
-              skewX: 0,
-              duration: 1.5,
-              delay: 0.8,
-              ease: "power3.out"
-            });
           },
           onLeaveBack: () => {
             if (projectsRef.current) {
@@ -139,11 +141,83 @@ export default function Home() {
             }
             // Reset content animation
             gsap.set(projectsContentRef.current, {
-              opacity: 0,
               y: 50,
               skewY: 5,
               skewX: -3
             });
+          }
+        },
+      });
+
+      // Projects content animation - triggered by video opacity instead of scroll
+      // Watches for when video is fully visible
+      ScrollTrigger.create({
+        trigger: skillsEndTriggerRef.current,
+        start: isMobile ? "top+=200vh bottom" : "top+=80vh bottom",
+        onEnter: () => {
+          gsap.to(projectsContentRef.current, {
+            opacity: 1,
+            y: 0,
+            skewY: 0,
+            skewX: 0,
+            duration: 1.5,
+            delay: 0.5,
+            ease: "power3.out"
+          });
+        },
+        onLeaveBack: () => {
+          gsap.set(projectsContentRef.current, {
+            opacity: 0,
+            y: 50,
+            skewY: 5,
+            skewX: -3
+          });
+        }
+      });
+
+      // Transition from Projects to ThreeScene (Section 4)
+      // Escalado concatenado con timeline - escala el VIDEO, no el contenido
+      const projectsToThreeTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: projectsEndTriggerRef.current,
+          start: "top+=30vh bottom",
+          end: isMobile ? "top+=80vh bottom" : "top+=50vh bottom",
+          scrub: true,
+        },
+      });
+
+      projectsToThreeTimeline
+        .to(videoRef.current,
+          { scale: 4, ease: "power2.in", duration: 2}
+        )
+        .to(projectsRef.current,
+          { opacity: 0, ease: "power2.in", duration: 0.5 },
+          "-=0.7" // Overlap
+        )
+        .fromTo(threeSceneRef.current,
+          { opacity: 0, visibility: 'hidden' },
+          { opacity: 1, visibility: 'visible', ease: "power2.out", duration: 0.8 },
+          "-=0.4" // Overlap
+        );
+
+      // ThreeScene content fade in y pointer events
+      gsap.to(threeSceneContentRef.current, {
+        opacity: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: projectsEndTriggerRef.current,
+          start: isMobile ? "top+=40vh bottom" : "top+=25vh bottom",
+          end: isMobile ? "top+=80vh bottom" : "top+=50vh bottom",
+          scrub: true,
+          onEnter: () => {
+            if (threeSceneRef.current) {
+              threeSceneRef.current.style.pointerEvents = 'auto';
+            }
+          },
+          onLeaveBack: () => {
+            if (threeSceneRef.current) {
+              threeSceneRef.current.style.pointerEvents = 'none';
+            }
           }
         },
       });
@@ -165,7 +239,7 @@ export default function Home() {
         loop
         muted
         playsInline
-        className="fixed inset-0 z-0 pointer-events-none w-full h-full object-cover opacity-0"
+        className="fixed inset-0 z-0 pointer-events-none w-full h-full object-cover"
       >
         <source src="/back-city.mp4" type="video/mp4" />
       </video>
@@ -182,13 +256,23 @@ export default function Home() {
         </div>
 
         {/* Trigger for third transition - extended scroll space for slower transition */}
-        <div className="relative min-h-[200vh] z-1">
+        <div className="relative min-h-[180vh] md:min-h-[150vh] z-1">
           <div ref={skillsEndTriggerRef} className="w-full h-full" />
         </div>
 
         {/* Projects Section - reveals background video */}
         <div ref={projectsRef} className="fixed inset-0 z-30 pointer-events-none">
           <Projects contentRef={projectsContentRef} />
+        </div>
+
+        {/* Trigger for fourth transition */}
+        <div className="relative min-h-[100vh] md:min-h-[80vh] z-1">
+          <div ref={projectsEndTriggerRef} className="w-full h-full" />
+        </div>
+
+        {/* ThreeScene Section - Fourth section */}
+        <div ref={threeSceneRef} className="fixed inset-0 z-40 pointer-events-none bg-black">
+          <ThreeScene contentRef={threeSceneContentRef} />
         </div>
       </main>
     </div>

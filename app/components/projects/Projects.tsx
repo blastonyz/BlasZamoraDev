@@ -5,7 +5,7 @@ interface ProjectsProps {
 }
 
 export default function Projects({ contentRef }: ProjectsProps) {
-    console.log(contentRef)
+    
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <div ref={contentRef} className="container mx-auto px-6">
