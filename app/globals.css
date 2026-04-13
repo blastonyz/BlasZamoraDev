@@ -49,12 +49,26 @@ body {
   position: relative;
 }
 
-.hero-container .bg-grid {
+/* Fixed Grid Background - Shared */
+.bg-grid {
+  position: fixed;
+  inset: 0;
   background-size: 40px 40px;
   mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+  pointer-events: none;
+  transition: box-shadow 0.8s ease-out;
+  box-shadow: inset 0 0 0px rgba(0, 255, 157, 0);
 }
 
-.hero-container .bg-grid-pattern {
+.bg-grid-pattern {
   background-image: linear-gradient(to right, #1f2937 2px, transparent 2px), 
                     linear-gradient(to bottom, #1f2937 2px, transparent 2px);
+}
+
+/* Grid Glow Effect - Activated by scroll */
+.bg-grid.active-glow {
+  box-shadow: 
+    inset 0 0 120px rgba(0, 255, 157, 0.15),
+    inset 0 0 60px rgba(0, 255, 255, 0.1),
+    0 0 40px rgba(0, 255, 157, 0.2);
 }
