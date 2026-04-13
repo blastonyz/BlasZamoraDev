@@ -24,20 +24,23 @@ const VIEW_H = 450;
 
 const WORLD_X_RANGE = 560;
 const WORLD_Y_SCALE = 1.5;
+const CLIP_OPENNESS = 1.95;
+const CLIP_OVERFLOW_Y = 48;
+const CENTER_EXTRA_HEIGHT = 10;
 const REF_W = 459;
 
 const TOP_CURVE = {
   p0: { x: 0.624878, y: 24.055 },   // antes 24.055
-  p1: { x: 175.784, y: 43.312 },    // antes 43.312
-  p2: { x: 275.767, y: 43.312 },    // antes 43.811
+  p1: { x: 175.784, y: 40.312 },    // antes 43.312
+  p2: { x: 275.767, y: 40.312 },    // antes 43.811
   p3: { x: 458.125, y: 24.055 },    // antes 24.055
 };
 
 const BOTTOM_CURVE = {
-  p0: { x: 0.624878, y: 308.945 },  // antes 308.945
-  p1: { x: 175.784, y: 289.189 },   // antes 289.688
-  p2: { x: 275.767, y: 289.189 },   // antes 289.189
-  p3: { x: 458.125, y: 308.945 },   // antes 308.945
+  p0: { x: 0.624878, y: 318.945 },  // antes 308.945
+  p1: { x: 175.784, y: 298.189 },   // antes 289.688
+  p2: { x: 275.767, y: 298.189 },   // antes 289.189
+  p3: { x: 458.125, y: 318.945 },   // antes 308.945
 };
 
 /*
@@ -99,16 +102,20 @@ const midYAtWorldX = (worldX: number) => (topYAtWorldX(worldX) + bottomYAtWorldX
 
 const getSlotX = (normalized: number) => {
   const slotOffset = normalized * HALF_VISIBLE;
-  return slotOffset * (CARD_W + 8) + Math.sign(slotOffset) * slotOffset * slotOffset * 5;
+  return slotOffset * (CARD_W ) + Math.sign(slotOffset) * slotOffset * slotOffset * 0.5;
 };
 
-const buildClipPath = (centerX: number) => {
+const buildClipPath = (centerX: number, cardHeight: number = CARD_H) => {
   const sampleCount = 11;
   const centerMid = midYAtWorldX(centerX);
 
   const toLocalY = (worldY: number) => {
-    // Keep local clip curvature tied directly to the same global reference curves.
-    return clamp(CARD_H / 2 + (worldY - centerMid) * WORLD_Y_SCALE, 0, CARD_H);
+    // Open the clipping window so card content reads complete while preserving curve logic.
+    return clamp(
+      cardHeight / 2 + (worldY - centerMid) * WORLD_Y_SCALE * CLIP_OPENNESS,
+      -CLIP_OVERFLOW_Y,
+      cardHeight + CLIP_OVERFLOW_Y,
+    );
   };
 
   const topPoints = Array.from({ length: sampleCount }, (_, index) => {
@@ -132,7 +139,7 @@ const buildVisibleSlot = (offset: number): VisibleSlot => {
   const normalized = offset / HALF_VISIBLE;
   const distance = Math.abs(normalized);
   const x = getSlotX(normalized);
-  const scale = 0.74 + distance * 0.22;
+  const scale = 0.78 + distance * 0.24;
   const z = -72 + distance * 96;
   const opacity = 1 - distance * 0.55;
   const ry = distance === 0 ? 0 : -Math.sign(normalized) * (8 + distance * 40);
@@ -228,6 +235,10 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
     <div className="relative mx-auto w-full overflow-hidden" style={{ height: VIEW_H }} role="region" aria-label="Concave reference project carousel">
       <div className="absolute inset-0 flex items-center justify-center">
         {positioned.map(({ project, slot, offset, interactive }) => {
+          const isCenterCard = Math.abs(offset) < 0.5;
+          const cardHeight = CARD_H + (isCenterCard ? CENTER_EXTRA_HEIGHT : 0);
+          const cardClipPath = isCenterCard ? buildClipPath(slot.x, cardHeight) : slot.clipPath;
+
           return (
             <div
               key={project.id}
@@ -251,12 +262,12 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
               className="absolute left-1/2 top-1/2 overflow-hidden rounded-xl border border-white/10 text-left"
               style={{
                 width: CARD_W,
-                height: CARD_H,
-                marginTop: -(CARD_H / 2),
+                height: cardHeight,
+                marginTop: -(cardHeight / 2),
                 transform: `translate(-50%, 0) perspective(980px) translate3d(${slot.x}px, 0px, ${slot.z}px) rotateY(${slot.ry}deg) scale(${slot.scale})`,
                 opacity: slot.opacity,
                 zIndex: Math.round(slot.z + 200),
-                clipPath: slot.clipPath,
+                clipPath: cardClipPath,
                 pointerEvents: interactive ? 'auto' : 'none',
               }}
             >
