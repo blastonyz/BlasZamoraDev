@@ -142,7 +142,7 @@ export default function Hero() {
             </div>
 
             {/* Right Content - Image */}
-            <div className="flex-shrink-0 flex justify-center lg:justify-start order-1 lg:order-2">
+            <div className="flex-shrink-0 flex justify-center lg:justify-center order-1 lg:order-2 lg:self-center">
               <div className="relative w-[300px] h-[300px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px]">
             
                 <div className="relative h-full w-full rounded-full border-4 bg-surface-dark group" style={{ borderColor: `${colors.green}4D`, boxShadow: shadows.glow }}>

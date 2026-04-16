@@ -3,7 +3,9 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { orbitron, gradientStyle } from '../../lib/theme';
+import { useResponsive } from '../../contexts/ResponsiveContext';
 import ConcaveBezierCarousel, { type Project3DItem } from '../ui/ConcaveBezierCarousel';
+import ProjectsMobile from './ProjectsMobile';
 
 // ─── Project data ──────────────────────────────────────────────────────────
 
@@ -24,6 +26,7 @@ interface ProjectsProps {
 
 export default function Projects({ contentRef }: ProjectsProps) {
   const titleRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -36,6 +39,20 @@ export default function Projects({ contentRef }: ProjectsProps) {
     return () => ctx.revert();
   }, []);
 
+  // Mobile view
+  if (isMobile) {
+    return (
+      <div className="projects-container relative w-full min-h-screen bg-transparent">
+        <section className="relative z-10 min-h-screen flex items-start justify-center pt-8 px-4 sm:px-8">
+          <div className="w-full max-w-3xl">
+            <ProjectsMobile projects={PROJECTS} />
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Desktop view
   return (
     <div className="projects-container relative w-full h-screen">
       <section className="relative z-10 min-h-screen flex items-start justify-center pt-8 md:pt-12">
