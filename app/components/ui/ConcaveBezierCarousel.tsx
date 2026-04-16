@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import BrowserCard from './BrowserCard';
-import type { Project3DItem } from './Project3DCarousel';
-
-export type { Project3DItem };
+import type { Project3DItem } from './types';
+import { colors, shadows } from '../../lib/theme';
 
 type VisibleSlot = {
   x: number;
@@ -295,7 +294,13 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
         type="button"
         aria-label="Previous"
         onClick={() => rotate(-1)}
-        className="absolute left-3 top-1/2 z-[220] h-9 w-9 -translate-y-1/2 rounded-full bg-white/10 text-base text-white transition hover:bg-white/25"
+        className="absolute left-3 top-1/2 z-[220] h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+        style={{
+          background: `${colors.green}1A`,
+          border: `2px solid ${colors.green}`,
+          color: colors.green,
+          boxShadow: shadows.md,
+        }}
       >
         {'<'}
       </button>
@@ -303,10 +308,32 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
         type="button"
         aria-label="Next"
         onClick={() => rotate(1)}
-        className="absolute right-3 top-1/2 z-[220] h-9 w-9 -translate-y-1/2 rounded-full bg-white/10 text-base text-white transition hover:bg-white/25"
+        className="absolute right-3 top-1/2 z-[220] h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+        style={{
+          background: `${colors.green}1A`,
+          border: `2px solid ${colors.green}`,
+          color: colors.green,
+          boxShadow: shadows.md,
+        }}
       >
         {'>'}
       </button>
+
+      <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 z-[220]" style={{ top: 'calc(1.5rem - 25px)' }}>
+        {projects.map((_, index) => (
+          <div
+            key={index}
+            className={`h-2.5 rounded-full transition-all duration-300 ${
+              index === current ? 'w-7' : 'w-2.5'
+            }`}
+            style={
+              index === current
+                ? { background: colors.green, boxShadow: shadows.md }
+                : { background: `${colors.green}40` }
+            }
+          />
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import BrowserCard from '../ui/BrowserCard';
 import { orbitron, gradientStyle, colors, shadows } from '../../lib/theme';
-import type { Project3DItem } from '../ui/Project3DCarousel';
+import type { Project3DItem } from '../ui/types';
 
 interface ProjectsMobileProps {
   projects: Project3DItem[];
@@ -11,6 +11,13 @@ interface ProjectsMobileProps {
 
 export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const pointerIdRef = useRef<number | null>(null);
+  const startXRef = useRef<number | null>(null);
+  const startYRef = useRef<number | null>(null);
+  const lastXRef = useRef<number | null>(null);
+  const lastYRef = useRef<number | null>(null);
+  const hasSwipedRef = useRef(false);
+  const SWIPE_THRESHOLD = 24;
 
   const next = () => {
     setActiveIndex((prev) => Math.min(prev + 1, projects.length - 1));
@@ -18,6 +25,80 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
 
   const prev = () => {
     setActiveIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    pointerIdRef.current = e.pointerId;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+    lastXRef.current = e.clientX;
+    lastYRef.current = e.clientY;
+    hasSwipedRef.current = false;
+
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    if (hasSwipedRef.current || startXRef.current === null || startYRef.current === null) return;
+
+    const deltaX = e.clientX - startXRef.current;
+    const deltaY = e.clientY - startYRef.current;
+    lastXRef.current = e.clientX;
+    lastYRef.current = e.clientY;
+
+    // Only trigger swipe when horizontal movement is dominant.
+    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    if (deltaX <= -SWIPE_THRESHOLD) {
+      hasSwipedRef.current = true;
+      next();
+    } else if (deltaX >= SWIPE_THRESHOLD) {
+      hasSwipedRef.current = true;
+      prev();
+    }
+  };
+
+  const resetPointer = () => {
+    pointerIdRef.current = null;
+    startXRef.current = null;
+    startYRef.current = null;
+    lastXRef.current = null;
+    lastYRef.current = null;
+    hasSwipedRef.current = false;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+
+    if (!hasSwipedRef.current && startXRef.current !== null && startYRef.current !== null) {
+      const endX = e.clientX ?? lastXRef.current ?? startXRef.current;
+      const endY = e.clientY ?? lastYRef.current ?? startYRef.current;
+      const deltaX = endX - startXRef.current;
+      const deltaY = endY - startYRef.current;
+
+      // Fallback for quick flicks where onTouchMove can be sparse.
+      if (Math.abs(deltaX) >= SWIPE_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) next();
+        else prev();
+      }
+    }
+
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    resetPointer();
+  };
+
+  const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerIdRef.current === e.pointerId) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore if pointer capture was already released by browser
+      }
+      resetPointer();
+    }
   };
 
   return (
@@ -42,7 +123,14 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
       </div>
 
       {/* Carousel Container */}
-      <div className="relative h-[555px] sm:h-[600px] w-full overflow-hidden rounded-2xl">
+      <div
+        className="relative h-[560px] sm:h-[600px] w-full overflow-hidden rounded-2xl"
+        style={{ touchAction: 'pan-y' }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+      >
         <div
           className="absolute inset-0 flex items-center justify-center"
           style={{
@@ -63,7 +151,7 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
 
               // 3D positioning
               const xPosition = offset * 30;
-              const yPosition = offset * -30;
+              const yPosition = offset * -30 - 6;
               const zPosition = offset * -80;
 
               // Fade out gradually for deeper cards
@@ -93,34 +181,21 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
           </div>
         </div>
 
-        {/* Navigation Buttons */}
-        <div className="absolute left-1/2 flex -translate-x-1/2 gap-3 z-50" style={{ bottom: 'calc(1.5rem - 25px)' }}>
-          <button
-            onClick={prev}
-            disabled={activeIndex === 0}
-            className="h-11 w-11 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center font-bold transition-all duration-200 text-lg"
-            style={{
-              background: `${colors.green}1A`,
-              border: `2px solid ${colors.green}`,
-              color: colors.green,
-              boxShadow: shadows.md,
-            }}
-          >
-            ←
-          </button>
-          <button
-            onClick={next}
-            disabled={activeIndex === projects.length - 1}
-            className="h-11 w-11 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center font-bold transition-all duration-200 text-lg"
-            style={{
-              background: `${colors.green}1A`,
-              border: `2px solid ${colors.green}`,
-              color: colors.green,
-              boxShadow: shadows.md,
-            }}
-          >
-            →
-          </button>
+        {/* Swipe Hint */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2 rounded-md"
+          style={{
+            bottom: 'calc(1.5rem - 21px)',
+            border: `1px solid ${colors.green}66`,
+            background: `${colors.green}14`,
+            boxShadow: shadows.sm,
+          }}
+        >
+          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>←</span>
+          <span className={`text-[11px] tracking-wider ${orbitron.className}`} style={{ color: `${colors.green}CC` }}>
+            SWIPE
+          </span>
+          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>→</span>
         </div>
 
         {/* Indicator Dots */}

@@ -4,7 +4,8 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { orbitron, gradientStyle } from '../../lib/theme';
 import { useResponsive } from '../../contexts/ResponsiveContext';
-import ConcaveBezierCarousel, { type Project3DItem } from '../ui/ConcaveBezierCarousel';
+import ConcaveBezierCarousel from '../ui/ConcaveBezierCarousel';
+import type { Project3DItem } from '../ui/types';
 import ProjectsMobile from './ProjectsMobile';
 
 // ─── Project data ──────────────────────────────────────────────────────────
@@ -55,8 +56,8 @@ export default function Projects({ contentRef }: ProjectsProps) {
   // Desktop view
   return (
     <div className="projects-container relative w-full h-screen">
-      <section className="relative z-10 min-h-screen flex items-start justify-center pt-8 md:pt-12">
-        <div ref={contentRef} className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 w-full">
+      <section className="relative z-10 min-h-screen flex items-start justify-center md:pt-6">
+        <div ref={contentRef} className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-14 xl:px-20 w-full">
 
           {/* Title */}
           <div ref={titleRef} className="text-center mb-10">

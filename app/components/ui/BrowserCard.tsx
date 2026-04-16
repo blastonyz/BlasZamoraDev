@@ -1,6 +1,6 @@
 'use client';
 
-import type { Project3DItem } from './Project3DCarousel';
+import type { Project3DItem } from './types';
 
 export default function BrowserCard({ title, image, url, colorCard, disableShadow = false }: Project3DItem & { disableShadow?: boolean }) {
   const [r, g, b] = colorCard;
