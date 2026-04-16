@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import BrowserCard from './BrowserCard';
 import type { Project3DItem } from './types';
-import { colors, shadows } from '../../lib/theme';
+import { colors, shadows, gradientStyle } from '../../lib/theme';
 
 type VisibleSlot = {
   x: number;
@@ -16,10 +16,9 @@ type VisibleSlot = {
 };
 
 const CARD_W = 280;
-const CARD_H = 450;
+const CARD_H = 560;
 const VISIBLE_SLOTS = 7;
 const HALF_VISIBLE = Math.floor(VISIBLE_SLOTS / 2);
-const VIEW_H = 450;
 
 const WORLD_X_RANGE = 560;
 const WORLD_Y_SCALE = 1.5;
@@ -29,35 +28,18 @@ const CENTER_EXTRA_HEIGHT = 10;
 const REF_W = 459;
 
 const TOP_CURVE = {
-  p0: { x: 0.624878, y: 24.055 },   // antes 24.055
-  p1: { x: 175.784, y: 40.312 },    // antes 43.312
-  p2: { x: 275.767, y: 40.312 },    // antes 43.811
-  p3: { x: 458.125, y: 24.055 },    // antes 24.055
+  p0: { x: 0.624878, y: 24.055 },  
+  p1: { x: 175.784, y: 40.312 },   
+  p2: { x: 275.767, y: 40.312 },   
+  p3: { x: 458.125, y: 24.055 },   
 };
 
 const BOTTOM_CURVE = {
-  p0: { x: 0.624878, y: 318.945 },  // antes 308.945
-  p1: { x: 175.784, y: 298.189 },   // antes 289.688
-  p2: { x: 275.767, y: 298.189 },   // antes 289.189
-  p3: { x: 458.125, y: 318.945 },   // antes 308.945
+  p0: { x: 0.624878, y: 318.945 }, 
+  p1: { x: 175.784, y: 298.189 },  
+  p2: { x: 275.767, y: 298.189 },  
+  p3: { x: 458.125, y: 318.945 },  
 };
-
-/*
-const TOP_CURVE = {
-  p0: { x: 0.5, y: 4.27254 },
-  p1: { x: 153.175, y: 56.2989 },
-  p2: { x: 283.196, y: 65.4007 },
-  p3: { x: 457.996, y: 4.27254 },
-};
-
-const BOTTOM_CURVE = {
-  p0: { x: 0.624878, y: 328.945 },
-  p1: { x: 175.784, y: 289.688 },
-  p2: { x: 275.767, y: 289.189 },
-  p3: { x: 458.125, y: 328.945 },
-};*/
-
-
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
@@ -231,12 +213,50 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
   };
 
   return (
-    <div className="relative mx-auto w-full overflow-hidden" style={{ height: VIEW_H }} role="region" aria-label="Concave reference project carousel">
-      <div className="absolute inset-0 flex items-center justify-center">
+    <div className="relative mx-auto flex min-h-[880px] w-full flex-col items-center overflow-hidden md:h-[880px]" role="region" aria-label="Concave reference project carousel">
+      <section className="z-30 flex flex-col items-center gap-y-4 pt-2">
+        <div
+          className="h-[182px] w-[737px] bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/scifi-label.svg')", backgroundSize: '100% 100%' }}
+        >
+          <div className="flex h-full w-full items-center justify-center">
+            <p
+              className="text-3xl font-bold tracking-wide"
+              style={{
+                color: '#000000',
+                backgroundImage: gradientStyle,
+                padding: '10px',
+                display: 'inline-block',
+              }}
+            >
+              {projects[current]?.title}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          {projects.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === current ? 'w-7' : 'w-2.5'
+              }`}
+              style={
+                index === current
+                  ? { background: colors.green, boxShadow: shadows.md }
+                  : { background: `${colors.green}40` }
+              }
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="relative z-20 flex h-[560px] w-full items-center justify-center">
         {positioned.map(({ project, slot, offset, interactive }) => {
           const isCenterCard = Math.abs(offset) < 0.5;
           const cardHeight = CARD_H + (isCenterCard ? CENTER_EXTRA_HEIGHT : 0);
           const cardClipPath = isCenterCard ? buildClipPath(slot.x, cardHeight) : slot.clipPath;
+          const cardZIndex = Math.max(10, 20 - Math.min(10, Math.round(Math.abs(offset) * 3)));
 
           return (
             <div
@@ -258,82 +278,71 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
                   if (offset > 0) rotate(1);
                 }
               }}
-              className="absolute left-1/2 top-1/2 overflow-hidden rounded-xl border border-white/10 text-left"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-left"
               style={{
-                width: CARD_W,
-                height: cardHeight,
-                marginTop: -(cardHeight / 2),
-                transform: `translate(-50%, 0) perspective(980px) translate3d(${slot.x}px, 0px, ${slot.z}px) rotateY(${slot.ry}deg) scale(${slot.scale})`,
                 opacity: slot.opacity,
-                zIndex: Math.round(slot.z + 200),
-                clipPath: cardClipPath,
+                zIndex: cardZIndex,
                 pointerEvents: interactive ? 'auto' : 'none',
               }}
             >
-              <div className="relative h-full w-full">
-                <BrowserCard {...project} />
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.2),transparent_44%)]" />
-                {slot.ry !== 0 && (
-                  <div
-                    className="pointer-events-none absolute inset-0"
-                    style={{
-                      background:
-                        slot.ry < 0
-                          ? `linear-gradient(to right, transparent 30%, rgba(0,0,0,${(Math.abs(slot.ry) / 50) * 0.55}) 100%)`
-                          : `linear-gradient(to left, transparent 30%, rgba(0,0,0,${(Math.abs(slot.ry) / 50) * 0.55}) 100%)`,
-                    }}
-                  />
-                )}
+              <div
+                className="relative overflow-hidden rounded-xl border border-white/10"
+                style={{
+                  width: CARD_W,
+                  height: cardHeight,
+                  transform: `perspective(980px) translate3d(${slot.x}px, 0px, ${slot.z}px) rotateY(${slot.ry}deg) scale(${slot.scale})`,
+                  clipPath: cardClipPath,
+                }}
+              >
+                <div className="relative h-full w-full">
+                  <BrowserCard {...project} />
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.2),transparent_44%)]" />
+                  {slot.ry !== 0 && (
+                    <div
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        background:
+                          slot.ry < 0
+                            ? `linear-gradient(to right, transparent 30%, rgba(0,0,0,${(Math.abs(slot.ry) / 50) * 0.55}) 100%)`
+                            : `linear-gradient(to left, transparent 30%, rgba(0,0,0,${(Math.abs(slot.ry) / 50) * 0.55}) 100%)`,
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           );
         })}
-      </div>
+        <button
+          type="button"
+          aria-label="Previous"
+          onClick={() => rotate(-1)}
+          className="absolute left-3 top-1/2 z-40 h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+          style={{
+            background: `${colors.green}1A`,
+            border: `2px solid ${colors.green}`,
+            color: colors.green,
+            boxShadow: shadows.md,
+          }}
+        >
+          {'<'}
+        </button>
+        <button
+          type="button"
+          aria-label="Next"
+          onClick={() => rotate(1)}
+          className="absolute right-3 top-1/2 z-40 h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+          style={{
+            background: `${colors.green}1A`,
+            border: `2px solid ${colors.green}`,
+            color: colors.green,
+            boxShadow: shadows.md,
+          }}
+        >
+          {'>'}
+        </button>
+      </section>
 
-      <button
-        type="button"
-        aria-label="Previous"
-        onClick={() => rotate(-1)}
-        className="absolute left-3 top-1/2 z-[220] h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
-        style={{
-          background: `${colors.green}1A`,
-          border: `2px solid ${colors.green}`,
-          color: colors.green,
-          boxShadow: shadows.md,
-        }}
-      >
-        {'<'}
-      </button>
-      <button
-        type="button"
-        aria-label="Next"
-        onClick={() => rotate(1)}
-        className="absolute right-3 top-1/2 z-[220] h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
-        style={{
-          background: `${colors.green}1A`,
-          border: `2px solid ${colors.green}`,
-          color: colors.green,
-          boxShadow: shadows.md,
-        }}
-      >
-        {'>'}
-      </button>
-
-      <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 z-[220]" style={{ top: 'calc(1.5rem - 25px)' }}>
-        {projects.map((_, index) => (
-          <div
-            key={index}
-            className={`h-2.5 rounded-full transition-all duration-300 ${
-              index === current ? 'w-7' : 'w-2.5'
-            }`}
-            style={
-              index === current
-                ? { background: colors.green, boxShadow: shadows.md }
-                : { background: `${colors.green}40` }
-            }
-          />
-        ))}
-      </div>
     </div>
   );
 }

@@ -43,8 +43,8 @@ export default function Projects({ contentRef }: ProjectsProps) {
   // Mobile view
   if (isMobile) {
     return (
-      <div className="projects-container relative w-full min-h-screen bg-transparent">
-        <section className="relative z-10 min-h-screen flex items-start justify-center pt-8 px-4 sm:px-8">
+      <div className="projects-container relative w-full bg-transparent mb-[5px]">
+        <section className="relative z-10 flex items-start justify-center pt-0 px-4 sm:px-8">
           <div className="w-full max-w-3xl">
             <ProjectsMobile projects={PROJECTS} />
           </div>
@@ -55,8 +55,8 @@ export default function Projects({ contentRef }: ProjectsProps) {
 
   // Desktop view
   return (
-    <div className="projects-container relative w-full h-screen">
-      <section className="relative z-10 min-h-screen flex items-start justify-center md:pt-6">
+    <div className="projects-container relative w-full min-h-[1100px]">
+      <section className="relative z-10 min-h-[1100px] flex items-start justify-center md:pt-6">
         <div ref={contentRef} className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-14 xl:px-20 w-full">
 
           {/* Title */}
@@ -79,7 +79,9 @@ export default function Projects({ contentRef }: ProjectsProps) {
           </div>
 
           {/* Concave reference carousel */}
-          <ConcaveBezierCarousel projects={PROJECTS} />
+          <div className="mt-8">
+            <ConcaveBezierCarousel projects={PROJECTS} />
+          </div>
 
         </div>
       </section>

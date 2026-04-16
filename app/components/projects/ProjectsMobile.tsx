@@ -104,9 +104,9 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
   return (
     <div className="relative w-full">
       {/* Title */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-[5px]">
         <h2
-          className={`text-4xl sm:text-5xl font-bold mb-4 ${orbitron.className}`}
+          className={`text-5xl md:text-7xl font-bold mb-6 ${orbitron.className}`}
           style={{
             backgroundImage: gradientStyle,
             WebkitBackgroundClip: 'text',
@@ -117,9 +117,29 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
         >
           PROJECTS
         </h2>
-        <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
           Featured work and recent developments
         </p>
+        <div
+          className="mx-auto mt-4 flex w-[350px] sm:w-[340px] items-center justify-center bg-center bg-no-repeat"
+          style={{
+            aspectRatio: '303 / 148',
+            backgroundImage: "url('/scifi-label.svg')",
+            backgroundSize: 'contain',
+          }}
+        >
+          <p
+            className={`text-lg sm:text-xl ${orbitron.className}`}
+            style={{
+              color: '#000000',
+              backgroundImage: gradientStyle,
+              padding: '5px',
+              display: 'inline-block',
+            }}
+          >
+            {projects[activeIndex]?.title}
+          </p>
+        </div>
       </div>
 
       {/* Carousel Container */}

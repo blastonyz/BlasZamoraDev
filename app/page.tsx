@@ -64,8 +64,8 @@ export default function Home() {
         </div>
 
         {/* Projects Section - 2nd (Fixed with scrollable content) */}
-        <div className="relative min-h-screen z-20">
-          <div ref={projectsRef} className=" h-screen bg-transparent">
+        <div className="relative z-20">
+          <div ref={projectsRef} className="bg-transparent">
             <div ref={projectsContentRef}>
               <Projects contentRef={projectsContentRef} />
             </div>
