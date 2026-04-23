@@ -120,26 +120,18 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
         <p className="text-gray-400 text-lg max-w-2xl mx-auto">
           Featured work and recent developments
         </p>
-        <div
-          className="mx-auto mt-4 flex w-[350px] sm:w-[340px] items-center justify-center bg-center bg-no-repeat"
+        <p
+          className={`mx-auto mt-4 text-xl tracking-[0.08em] sm:text-2xl ${orbitron.className}`}
           style={{
-            aspectRatio: '303 / 148',
-            backgroundImage: "url('/scifi-label.svg')",
-            backgroundSize: 'contain',
+            backgroundImage: gradientStyle,
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            color: 'transparent',
           }}
         >
-          <p
-            className={`text-lg sm:text-xl ${orbitron.className}`}
-            style={{
-              color: '#000000',
-              backgroundImage: gradientStyle,
-              padding: '5px',
-              display: 'inline-block',
-            }}
-          >
-            {projects[activeIndex]?.title}
-          </p>
-        </div>
+          {projects[activeIndex]?.title}
+        </p>
       </div>
 
       {/* Carousel Container */}
@@ -223,7 +215,7 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
           {projects.map((_, index) => (
             <div
               key={index}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
+              className={`h-2.5 transition-all duration-300 ${
                 index === activeIndex
                   ? 'w-7'
                   : 'w-2.5'

@@ -215,30 +215,26 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
   return (
     <div className="relative mx-auto flex min-h-[880px] w-full flex-col items-center overflow-hidden md:h-[880px]" role="region" aria-label="Concave reference project carousel">
       <section className="z-30 flex flex-col items-center gap-y-4 pt-2">
-        <div
-          className="h-[182px] w-[737px] bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/scifi-label.svg')", backgroundSize: '100% 100%' }}
-        >
-          <div className="flex h-full w-full items-center justify-center">
-            <p
-              className="text-3xl font-bold tracking-wide"
-              style={{
-                color: '#000000',
-                backgroundImage: gradientStyle,
-                padding: '10px',
-                display: 'inline-block',
-              }}
-            >
-              {projects[current]?.title}
-            </p>
-          </div>
+        <div className="min-w-[220px] px-8 py-3 text-center">
+          <p
+            className="text-2xl font-bold tracking-[0.08em] md:text-3xl"
+            style={{
+              backgroundImage: gradientStyle,
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+            }}
+          >
+            {projects[current]?.title}
+          </p>
         </div>
 
         <div className="flex gap-2">
           {projects.map((_, index) => (
             <div
               key={index}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
+              className={`h-2.5 transition-all duration-300 ${
                 index === current ? 'w-7' : 'w-2.5'
               }`}
               style={
@@ -286,7 +282,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
               }}
             >
               <div
-                className="relative overflow-hidden rounded-xl border border-white/10"
+                className="relative overflow-hidden border border-white/10"
                 style={{
                   width: CARD_W,
                   height: cardHeight,
@@ -317,7 +313,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
           type="button"
           aria-label="Previous"
           onClick={() => rotate(-1)}
-          className="absolute left-3 top-1/2 z-40 h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+          className="absolute left-3 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
           style={{
             background: `${colors.green}1A`,
             border: `2px solid ${colors.green}`,
@@ -331,7 +327,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
           type="button"
           aria-label="Next"
           onClick={() => rotate(1)}
-          className="absolute right-3 top-1/2 z-40 h-11 w-11 -translate-y-1/2 rounded-full text-base transition"
+          className="absolute right-3 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
           style={{
             background: `${colors.green}1A`,
             border: `2px solid ${colors.green}`,

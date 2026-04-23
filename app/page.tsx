@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hero from "./components/hero/Hero";
-import Skills from "./components/skills/Skills";
+import Skills from "./components/skills";
 import Projects from "./components/projects/Projects";
 import LoadingScreen from "./components/LoadingScreen";
+import Contact from "./components/contact/Contact";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,13 +54,13 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-white font-sans overflow-hidden">
+    <div className="bg-[#030D0A] text-[#C8F0E8] overflow-hidden">
       {/* Fixed Grid Background */}
       <div ref={gridRef} className="bg-grid bg-grid-pattern opacity-[0.05] z-0"></div>
       
       <main className="w-full relative">
         {/* Hero Section - 1st */}
-        <div ref={heroRef} className="relative min-h-screen z-10 bg-white">
+        <div ref={heroRef} className="relative min-h-screen z-10 bg-transparent">
           <Hero />
         </div>
 
@@ -72,13 +73,18 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Skills Section - 3rd (Fixed with scrollable content) */}
-        <div className="relative min-h-screen z-30">
-          <div ref={skillsRef} className="sticky top-0 h-screen bg-black">
+        {/* Skills Section - 3rd */}
+        <div className="relative z-30">
+          <div ref={skillsRef} className="bg-transparent">
             <div ref={skillsContentRef}>
               <Skills />
             </div>
           </div>
+        </div>
+
+        {/* Contact + Footer - 4th */}
+        <div className="relative z-40">
+          <Contact />
         </div>
       </main>
     </div>

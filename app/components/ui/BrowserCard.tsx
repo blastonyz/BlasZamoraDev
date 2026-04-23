@@ -7,7 +7,7 @@ export default function BrowserCard({ title, image, url, colorCard, disableShado
 
   return (
     <div
-      className="h-full w-full select-none overflow-hidden rounded-xl"
+      className="h-full w-full select-none overflow-hidden"
       style={{
         background: 'rgba(10,10,16,0.9)',
         border: `1.5px solid rgba(${r},${g},${b},0.55)`,
@@ -22,7 +22,7 @@ export default function BrowserCard({ title, image, url, colorCard, disableShado
         }}
       >
         <div
-          className="flex items-center gap-1.5 rounded-t-lg px-3 py-1 text-[10px] text-white/80"
+          className="flex items-center gap-1.5 px-3 py-1 text-[10px] text-white/80"
           style={{ background: `rgba(${r},${g},${b},0.14)` }}
         >
           <div className="h-2.5 w-2.5 flex-shrink-0 rounded-full" style={{ background: `rgba(${r},${g},${b},0.9)` }} />
@@ -46,7 +46,7 @@ export default function BrowserCard({ title, image, url, colorCard, disableShado
       >
         <button className="text-xs leading-none text-white/25">←</button>
         <button disabled className="text-xs leading-none text-white/12 opacity-30">→</button>
-        <div className="flex flex-1 items-center gap-1 rounded-full px-2.5 py-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
+        <div className="flex flex-1 items-center gap-1 px-2.5 py-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
           <span className="text-[8px] leading-none" style={{ color: `rgba(${r},${g},${b},0.8)` }}>
             🔒
           </span>

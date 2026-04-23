@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { orbitron, gradientStyle } from '../../lib/theme';
 import { useResponsive } from '../../contexts/ResponsiveContext';
+import { orbitron, gradientStyle } from '../../lib/theme';
 import ConcaveBezierCarousel from '../ui/ConcaveBezierCarousel';
 import type { Project3DItem } from '../ui/types';
 import ProjectsMobile from './ProjectsMobile';
@@ -11,12 +11,12 @@ import ProjectsMobile from './ProjectsMobile';
 // ─── Project data ──────────────────────────────────────────────────────────
 
 const PROJECTS: Project3DItem[] = [
-  { id: 0, title: 'DeFiar',      image: '/defiar.png',     url: 'defiar.xyz',       colorCard: [142, 249, 252] },
-  { id: 1, title: 'Greenhouse',  image: '/greenhouse.png', url: 'greenhouse.app',   colorCard: [142, 252, 157] },
-  { id: 2, title: 'MultiDAO',    image: '/multidao.png',   url: 'multidao.io',      colorCard: [142, 202, 252] },
-  { id: 3, title: 'Road to Pro', image: '/roadtopro.png',  url: 'roadtopro.dev',    colorCard: [215, 252, 142] },
-  { id: 4, title: 'Sanar',   image: '/sanar.png',      url: 'sanar.ong',        colorCard: [142, 252, 204] },
-  { id: 5, title: 'TuAgro',      image: '/tuagro.png',     url: 'tuagro.com.ar',    colorCard: [252, 208, 142] },
+  { id: 0, title: 'DeFiar', image: '/defiar.png', url: 'defiar.xyz', colorCard: [142, 249, 252] },
+  { id: 1, title: 'Greenhouse', image: '/greenhouse.png', url: 'greenhouse.app', colorCard: [142, 252, 157] },
+  { id: 2, title: 'MultiDAO', image: '/multidao.png', url: 'multidao.io', colorCard: [142, 202, 252] },
+  { id: 3, title: 'Road to Pro', image: '/roadtopro.png', url: 'roadtopro.dev', colorCard: [215, 252, 142] },
+  { id: 4, title: 'Sanar', image: '/sanar.png', url: 'sanar.ong', colorCard: [142, 252, 204] },
+  { id: 5, title: 'TuAgro', image: '/tuagro.png', url: 'tuagro.com.ar', colorCard: [252, 208, 142] },
 ];
 
 // ─── Main ──────────────────────────────────────────────────────────────────
@@ -57,9 +57,7 @@ export default function Projects({ contentRef }: ProjectsProps) {
   return (
     <div className="projects-container relative w-full min-h-[1100px]">
       <section className="relative z-10 min-h-[1100px] flex items-start justify-center md:pt-6">
-        <div ref={contentRef} className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-14 xl:px-20 w-full">
-
-          {/* Title */}
+        <div ref={contentRef} className="mx-auto w-full max-w-[1600px] px-6 sm:px-8 lg:px-14 xl:px-20">
           <div ref={titleRef} className="text-center mb-10">
             <h2
               className={`text-5xl md:text-7xl font-bold mb-6 ${orbitron.className}`}
@@ -78,11 +76,9 @@ export default function Projects({ contentRef }: ProjectsProps) {
             </p>
           </div>
 
-          {/* Concave reference carousel */}
           <div className="mt-8">
             <ConcaveBezierCarousel projects={PROJECTS} />
           </div>
-
         </div>
       </section>
     </div>

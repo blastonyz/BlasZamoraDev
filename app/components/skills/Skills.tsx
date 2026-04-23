@@ -1,142 +1,243 @@
-
-
 'use client';
 
-import { useState } from 'react';
-import { orbitron, colors, gradientStyle } from '../../lib/theme';
+import { useMemo, useState } from 'react';
+import { orbitron, colors } from '../../lib/theme';
 
-const skillsData = {
-    title: "FrontEnd Web3 & Smart Contracts",
-    selectors: [
-        {
-            id: "frontend",
-            label: "FrontEnd",
-            content: {
-                description: "Interfaces futuristas y responsivas con React, Next.js y Tailwind. Experiencias inmersivas con shaders y diseño modular.",
-                technologies: ["JavaScript", "TypeScript", "React", "Next.js", "TailwindCSS", "CSS Modules", "Shaders", "Three.js", "Gsap"]
-            }
-        },
-        {
-            id: "backend",
-            label: "BackEnd",
-            content: {
-                description: "Automatización SaaS y APIs robustas con Node.js, Express y Nest.js. Persistencia con MongoDB y flujos OAuth.",
-                technologies: ["Node.js", "Express", "Nest.js", "MongoDB", "REST APIs", "OAuth"]
-            }
-        },
-        {
-            id: "smartcontracts",
-            label: "Smart Contracts",
-            content: {
-                description: "Contratos inteligentes seguros y modulares con Solidity y OpenZeppelin. Experimentos con ERC20, ERC721, ERC1167, ERC4337 y Governor.",
-                technologies: ["Solidity", "Remix", "Foundry", "Hardhat", "OpenZeppelin", "ERC20", "ERC721", "ERC1167", "ERC4337", "Governor"],
-            }
-        },
-        {
-            id: "web3",
-            label: "Web3",
-            content: {
-                description: "Integraciones con Ethers.js, Viem, Wagmi y RainbowKit. Wallet onboarding y experiencias descentralizadas fluidas.",
-                technologies: ["Ethers.js", "Viem", "Wagmi", "RainbowKit", "IPFS"]
-            }
-        },
-        {
-            id: "otros",
-            label: "Otros",
-            content: {
-                description: "Herramientas complementarias para diseño, colaboración y visualización 3D.",
-                technologies: ["Git", "Figma", "Blender", "Shaders", "3D Assets"]
-            }
-        }
-    ]
+type SkillCard = {
+  num: string;
+  title: string;
+  desc: string;
+  tech: string[];
 };
 
-const Skills = () => {
-    const [activeSkill, setActiveSkill] = useState(skillsData.selectors[0]);
+type SkillPanel = {
+  id: string;
+  label: string;
+  cards: SkillCard[];
+};
 
-    return (
-        <section className="relative w-full min-h-screen overflow-hidden">
-            <video
-                src="/aurora.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover z-0"
-            />
+const SKILL_PANELS: SkillPanel[] = [
+  {
+    id: 'frontend',
+    label: 'FRONTEND',
+    cards: [
+      {
+        num: '01',
+        title: 'UI FRAMEWORKS',
+        desc: 'Building scalable component architectures with modern reactive frameworks for high-performance interfaces.',
+        tech: ['React', 'Next.js', 'Vue 3', 'Nuxt'],
+      },
+      {
+        num: '02',
+        title: 'STYLING & ANIMATION',
+        desc: 'Crafting immersive visual experiences with advanced CSS, GSAP timelines and shader-based effects.',
+        tech: ['Tailwind', 'GSAP', 'Framer Motion', 'CSS Modules'],
+      },
+      {
+        num: '03',
+        title: '3D & WEBGL',
+        desc: 'Creating real-time 3D scenes, custom shaders and WebGL pipelines for immersive web experiences.',
+        tech: ['Three.js', 'WebGL', 'GLSL', 'R3F', 'Shaders'],
+      },
+      {
+        num: '04',
+        title: 'TYPED LANGUAGES',
+        desc: 'TypeScript-first development with strict typing, advanced generics and scalable code architecture.',
+        tech: ['TypeScript', 'JavaScript ES2024', 'JSDoc'],
+      },
+    ],
+  },
+  {
+    id: 'backend',
+    label: 'BACKEND',
+    cards: [
+      {
+        num: '01',
+        title: 'RUNTIME & SERVERS',
+        desc: 'Building APIs and server-side logic with Node.js, handling real-time connections and data streams.',
+        tech: ['Node.js', 'Express', 'Fastify', 'Bun'],
+      },
+      {
+        num: '02',
+        title: 'DATA LAYER',
+        desc: 'Designing schemas, managing migrations and optimizing queries for relational and document stores.',
+        tech: ['PostgreSQL', 'MongoDB', 'Prisma', 'Redis'],
+      },
+      {
+        num: '03',
+        title: 'API DESIGN',
+        desc: 'REST and GraphQL API architecture with real-time subscriptions, batching and schema federation.',
+        tech: ['GraphQL', 'REST', 'Apollo', 'WebSockets'],
+      },
+    ],
+  },
+  {
+    id: 'smartcontracts',
+    label: 'SMART CONTRACTS',
+    cards: [
+      {
+        num: '01',
+        title: 'SOLIDITY CONTRACTS',
+        desc: 'Writing, testing and deploying ERC-20, ERC-721 and custom smart contracts on EVM-compatible chains.',
+        tech: ['Solidity', 'ERC-20', 'ERC-721', 'OpenZeppelin'],
+      },
+      {
+        num: '02',
+        title: 'DEV TOOLING',
+        desc: 'Full smart contract development lifecycle with testing frameworks, local nodes and security analysis.',
+        tech: ['Hardhat', 'Foundry', 'Remix', 'Slither'],
+      },
+      {
+        num: '03',
+        title: 'DEPLOYMENT & OPS',
+        desc: 'Mainnet and testnet deployments, contract verification, upgradeable proxies and multi-sig governance.',
+        tech: ['Ethereum', 'Polygon', 'Arbitrum', 'IPFS'],
+      },
+    ],
+  },
+  {
+    id: 'web3',
+    label: 'WEB3',
+    cards: [
+      {
+        num: '01',
+        title: 'WALLET INTEGRATION',
+        desc: 'Seamless wallet connection flows, multi-chain support and transaction signing with UX-first approach.',
+        tech: ['Wagmi', 'Viem', 'RainbowKit', 'WalletConnect'],
+      },
+      {
+        num: '02',
+        title: 'BLOCKCHAIN DATA',
+        desc: 'Indexing on-chain data, building subgraphs and querying decentralized protocols with The Graph.',
+        tech: ['The Graph', 'Ethers.js', 'Web3.js', 'Alchemy'],
+      },
+      {
+        num: '03',
+        title: 'DEFI PROTOCOLS',
+        desc: 'Integrating DEX swaps, liquidity pools, yield strategies and DAO governance interfaces.',
+        tech: ['Uniswap SDK', 'Aave', 'DAOs', 'Aragon'],
+      },
+    ],
+  },
+  {
+    id: 'otros',
+    label: 'OTROS',
+    cards: [
+      {
+        num: '01',
+        title: 'DESIGN & 3D TOOLS',
+        desc: 'Herramientas complementarias para diseño, colaboración y visualización 3D.',
+        tech: ['Git', 'Figma', 'Blender', 'Shaders', '3D Assets'],
+      },
+      {
+        num: '02',
+        title: 'DEVOPS & CLOUD',
+        desc: 'CI/CD pipelines, containerized deployments and cloud infrastructure for scalable web apps.',
+        tech: ['Docker', 'GitHub Actions', 'Vercel', 'AWS'],
+      },
+    ],
+  },
+];
 
-            {/* Overlay oscuro */}
-            <div className="absolute inset-0 bg-black/20 z-[1]"></div>
+export default function Skills() {
+  const [activeId, setActiveId] = useState(SKILL_PANELS[0].id);
 
-            <div className="relative z-20 max-w-7xl mx-auto px-4 py-16 min-h-screen flex flex-col justify-center">
-                {/* Title */}
-                <h2
-                    className={`text-4xl md:text-5xl font-bold text-center mb-12 ${orbitron.className}`}
+  const activePanel = useMemo(
+    () => SKILL_PANELS.find((panel) => panel.id === activeId) ?? SKILL_PANELS[0],
+    [activeId],
+  );
+
+  return (
+    <section id="skills" className="relative w-full overflow-hidden px-8 py-2 md:px-20">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'linear-gradient(180deg, #030D0A 0%, #071410 100%)',
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-[1200px]">
+        <div className="mb-16 text-center">
+          <span className="mb-3 block font-mono text-[11px] tracking-[0.35em]" style={{ color: colors.green }}>
+            // 02 · TECH_STACK
+          </span>
+          <h2 className={`text-3xl font-bold md:text-5xl ${orbitron.className}`}>
+            FrontEnd <span style={{ color: colors.green }}>Web3</span> & Smart Contracts
+          </h2>
+          <div
+            className="mx-auto mt-5 h-[2px] w-20"
+            style={{ background: `linear-gradient(90deg, transparent, ${colors.green}, transparent)` }}
+          />
+        </div>
+
+        <div className="mb-12 flex flex-wrap justify-center gap-1">
+          {SKILL_PANELS.map((panel) => {
+            const active = panel.id === activeId;
+            return (
+              <button
+                key={panel.id}
+                type="button"
+                onClick={() => setActiveId(panel.id)}
+                className={`border px-5 py-2 text-[10px] tracking-[0.2em] transition-colors ${orbitron.className}`}
+                style={{
+                  borderColor: active ? colors.green : 'rgba(0,255,178,0.12)',
+                  background: active ? colors.green : 'transparent',
+                  color: active ? '#030D0A' : '#5A8A7A',
+                }}
+              >
+                {panel.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-5">
+          {activePanel.cards.map((card) => (
+            <article
+              key={`${activePanel.id}-${card.num}`}
+              className="relative w-[280px] overflow-hidden border p-7 transition-transform duration-200 hover:-translate-y-1"
+              style={{
+                background: '#0A1F19',
+                borderColor: 'rgba(0,255,178,0.12)',
+              }}
+            >
+              <div
+                className="absolute left-0 top-0 h-[2px] w-full"
+                style={{ background: `linear-gradient(90deg, transparent, ${colors.green}, transparent)` }}
+              />
+
+              <div
+                className={`pointer-events-none absolute right-5 top-4 text-4xl leading-none ${orbitron.className}`}
+                style={{ color: 'rgba(0,255,178,0.05)' }}
+              >
+                {card.num}
+              </div>
+
+              <h3 className={`mb-4 text-xs tracking-[0.18em] ${orbitron.className}`} style={{ color: colors.green }}>
+                {card.title}
+              </h3>
+
+              <p className="mb-5 text-sm leading-relaxed text-[#5A8A7A]">{card.desc}</p>
+
+              <div className="flex flex-wrap gap-2">
+                {card.tech.map((tech) => (
+                  <span
+                    key={tech}
+                    className="border px-3 py-1 font-mono text-[10px]"
                     style={{
-                        backgroundImage: gradientStyle,
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        color: 'transparent'
+                      borderColor: 'rgba(0,255,178,0.12)',
+                      background: 'rgba(0,255,178,0.03)',
+                      color: '#5A8A7A',
                     }}
-                >
-                    {skillsData.title}
-                </h2>
-
-                {/* Selectors */}
-                <div className="flex flex-wrap justify-center gap-4 mb-12">
-                    {skillsData.selectors.map((skill) => (
-                        <button
-                            key={skill.id}
-                            onClick={() => setActiveSkill(skill)}
-                            className={`px-6 py-3 rounded-sm backdrop-blur-md border transition-all ${orbitron.className}`}
-                            style={{
-                                backgroundColor: activeSkill.id === skill.id ? `${colors.green}33` : 'rgba(255,255,255,0.1)',
-                                borderColor: activeSkill.id === skill.id ? colors.green : colors.cyan + '66',
-                                color: activeSkill.id === skill.id ? colors.green : '#fff',
-                                boxShadow: activeSkill.id === skill.id ? `0 0 20px ${colors.green}66` : 'none'
-                            }}
-                        >
-                            {skill.label}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Content */}
-                <div
-                    className="flex flex-col backdrop-blur-xl bg-white/10 justify-around border rounded-lg p-8 max-w-4xl mx-auto w-full h-[380px] sm:h-[275px]"
-                    style={{ borderColor: `${colors.cyan}66` }}
-                >
-                    <p className="text-gray-200 text-lg mb-6 leading-relaxed">
-                        {activeSkill.content.description}
-                    </p>
-
-                    {/* Technologies */}
-                    <div className="mb-6">
-                        <h3 className={`text-sm uppercase tracking-widest mb-3 ${orbitron.className}`} style={{ color: colors.mint }}>
-                            Technologies
-                        </h3>
-                        <div className="flex flex-wrap gap-2">
-                            {activeSkill.content.technologies.map((tech, idx) => (
-                                <span
-                                    key={idx}
-                                    className="px-3 py-1 text-sm backdrop-blur-md border rounded"
-                                    style={{
-                                        backgroundColor: 'rgba(255,255,255,0.1)',
-                                        borderColor: colors.green + '33',
-                                        color: colors.green
-                                    }}
-                                >
-                                    {tech}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-    );
-};
-
-export default Skills;
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,8 +1,8 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useTexture } from '@react-three/drei';
-import { useRef, useState, Suspense, useMemo, useCallback, memo, useEffect } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { useRef, Suspense, useMemo, memo } from 'react';
 import * as THREE from 'three';
 
 // Precargar el modelo con DracoLoader
@@ -212,41 +212,15 @@ const MaskModel = memo(({ mouseXRef, isHoveringRef }: { mouseXRef: React.RefObje
 });
 
 function Loader() {
-  return (
-    <mesh>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="hotpink" wireframe />
-    </mesh>
-  );
+  return null;
 }
 
 export default function MaskReveal() {
   const mouseXRef = useRef<number>(0.5);
   const isHoveringRef = useRef<boolean>(false);
-  const [showMask, setShowMask] = useState(false);
-  
-  // Delay de 2 segundos antes de mostrar la máscara
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowMask(true);
-    }, 2000); // 2 segundos de delay
-    return () => clearTimeout(timer);
-  }, []);
   
   return (
     <div className="w-full h-full relative">
-      {/* Imagen de fondo en HTML */}
-      <div 
-        className="absolute inset-0" 
-        style={{
-          backgroundImage: 'url(/yo-vin.png)',
-          backgroundSize: '80%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          pointerEvents: 'none'
-        }}
-      />
-      
       {/* Canvas 3D con transparencia */}
       <div 
         className="absolute inset-0"
@@ -262,7 +236,8 @@ export default function MaskReveal() {
       >
         <Canvas 
           camera={{ position: [0, 0, 5], fov: 50 }}
-          gl={{ alpha: true }}
+          dpr={[1, 1.5]}
+          gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
           style={{ background: 'transparent', width: '100%', height: '100%', touchAction: 'pan-y' }}
         >
           <ambientLight intensity={1} />
@@ -272,16 +247,8 @@ export default function MaskReveal() {
           <spotLight position={[0, 10, 0]} angle={0.3} intensity={1} />
           
           <Suspense fallback={<Loader />}>
-            {showMask && <MaskModel mouseXRef={mouseXRef} isHoveringRef={isHoveringRef} />}
+            <MaskModel mouseXRef={mouseXRef} isHoveringRef={isHoveringRef} />
           </Suspense>
-          
-          <OrbitControls
-            enableRotate={false}
-            enableZoom={false}
-            enablePan={false}
-            minDistance={3}
-            maxDistance={10}
-          />
         </Canvas>
         
       </div>

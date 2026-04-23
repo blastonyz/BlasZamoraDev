@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import MaskReveal from '../ui/MaskReveal';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import TechSlider from '../ui/TechSlider';
 import { orbitron, colors, shadows, gradientStyle } from '../../lib/theme';
 import gsap from 'gsap';
@@ -9,13 +10,16 @@ import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(SplitText);
 
+const MaskReveal = dynamic(() => import('../ui/MaskReveal'), {
+  ssr: false,
+});
+
 export default function Hero() {
-  const [mounted, setMounted] = useState(false);
+  const [heroImageReady, setHeroImageReady] = useState(false);
+  const [showMesh, setShowMesh] = useState(false);
   const titleRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    setMounted(true);
-
     const ctx = gsap.context(() => {
       const split = new SplitText(".title", { type: "chars" });
       
@@ -52,6 +56,30 @@ export default function Hero() {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    if (!heroImageReady) return;
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let idleId: number | null = null;
+
+    const show = () => {
+      timeoutId = setTimeout(() => setShowMesh(true), 350);
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(show, { timeout: 1200 });
+    } else {
+      show();
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId);
+      }
+    };
+  }, [heroImageReady]);
 
 
   return (
@@ -149,9 +177,23 @@ export default function Hero() {
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-top from-background-dark via-transparent to-transparent z-10 pointer-events-none"></div>
 
-                  <div className="absolute inset-0 flex justify-center" style={{ touchAction: 'pan-y' }}>
-                    <MaskReveal/>
+                  <div className="absolute inset-0 pointer-events-none z-[1]">
+                    <Image
+                      src="/yo-vin.png"
+                      alt="Blas profile"
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 220px, (max-width: 1200px) 350px, 400px"
+                      className="object-contain p-[10%]"
+                      onLoad={() => setHeroImageReady(true)}
+                    />
                   </div>
+
+                  {showMesh && (
+                    <div className="absolute inset-0 z-[2] flex justify-center" style={{ touchAction: 'pan-y' }}>
+                      <MaskReveal />
+                    </div>
+                  )}
                   
                 </div>
 
