@@ -116,6 +116,7 @@ export default function FeaturedProjectsCarousel({ projects }: FeaturedProjectsC
               }}
             >
               <BrowserCard
+                id={project.id}
                 title={project.title}
                 image={project.image}
                 url={project.url}
