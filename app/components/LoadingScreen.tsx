@@ -72,7 +72,7 @@ export default function LoadingScreen({ onLoadComplete }: LoadingScreenProps) {
           color: 'transparent'
         }}
       >
-        CARGANDO
+        LOADING
       </h2>
     </div>
   );

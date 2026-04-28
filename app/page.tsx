@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <div className="bg-[#030D0A] text-[#C8F0E8] overflow-hidden">
       {/* Fixed Grid Background */}
-      <div ref={gridRef} className="bg-grid bg-grid-pattern opacity-[0.05] z-0"></div>
+      <div ref={gridRef} className="bg-grid bg-grid-pattern opacity-[0.14] z-0"></div>
       
       <main className="w-full relative">
         {/* Hero Section - 1st */}

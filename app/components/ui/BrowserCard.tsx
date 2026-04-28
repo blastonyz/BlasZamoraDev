@@ -11,7 +11,7 @@ export default function BrowserCard({ title, image, url, colorCard, disableShado
       style={{
         background: 'rgba(10,10,16,0.9)',
         border: `1.5px solid rgba(${r},${g},${b},0.55)`,
-        boxShadow: disableShadow ? 'none' : `0 0 28px rgba(${r},${g},${b},0.18), 0 32px 64px rgba(0,0,0,0.6)`,
+        boxShadow: disableShadow ? 'none' : `0 0 8px rgba(${r},${g},${b},0.16), 0 8px 20px rgba(7, 239, 34, 0.34)`,
       }}
     >
       <div

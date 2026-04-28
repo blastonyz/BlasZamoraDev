@@ -7,9 +7,10 @@ import type { Project3DItem } from '../ui/types';
 
 interface ProjectsMobileProps {
   projects: Project3DItem[];
+  onOpenProject: (project: Project3DItem) => void;
 }
 
-export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
+export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobileProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const pointerIdRef = useRef<number | null>(null);
   const startXRef = useRef<number | null>(null);
@@ -173,6 +174,10 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
                 <div
                   key={project.id}
                   className="absolute transition-all duration-500 ease-out rounded-2xl"
+                  onClick={() => {
+                    if (isActive) onOpenProject(project);
+                    else setActiveIndex(index);
+                  }}
                   style={{
                     width: '280px',
                     height: '440px',
@@ -234,6 +239,18 @@ export default function ProjectsMobile({ projects }: ProjectsMobileProps) {
         <p className="text-xs text-gray-400">
           {activeIndex + 1} / {projects.length}
         </p>
+        <button
+          type="button"
+          onClick={() => onOpenProject(projects[activeIndex])}
+          className={`mt-4 border px-4 py-3 text-[12px] tracking-[0.22em] text-white/85 ${orbitron.className}`}
+          style={{
+            borderColor: `${colors.green}66`,
+            background: `${colors.green}10`,
+            boxShadow: shadows.sm,
+          }}
+        >
+          VIEW DETAILS
+        </button>
       </div>
     </div>
   );

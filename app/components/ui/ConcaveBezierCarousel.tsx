@@ -135,10 +135,17 @@ const buildVisibleSlot = (offset: number): VisibleSlot => {
   };
 };
 
-export default function ConcaveBezierCarousel({ projects }: { projects: Project3DItem[] }) {
+export default function ConcaveBezierCarousel({
+  projects,
+  onOpenProject,
+}: {
+  projects: Project3DItem[];
+  onOpenProject: (project: Project3DItem) => void;
+}) {
   const [current, setCurrent] = useState(0);
   const [motionCurrent, setMotionCurrent] = useState(0);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const cardHoverRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const isAnimatingRef = useRef(false);
 
   useEffect(() => {
@@ -212,6 +219,20 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
     });
   };
 
+  const animateCenterCard = (projectId: number, active: boolean) => {
+    const node = cardHoverRefs.current[projectId];
+    if (!node) return;
+
+    gsap.killTweensOf(node);
+    gsap.to(node, {
+      scale: active ? 1.05 : 1,
+      y: active ? -8 : 0,
+      duration: active ? 0.24 : 0.2,
+      ease: active ? 'power2.out' : 'power2.inOut',
+      overwrite: 'auto',
+    });
+  };
+
   return (
     <div className="relative mx-auto flex min-h-[880px] w-full flex-col items-center overflow-hidden md:h-[880px]" role="region" aria-label="Concave reference project carousel">
       <section className="z-30 flex flex-col items-center gap-y-4 pt-2">
@@ -253,6 +274,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
           const cardHeight = CARD_H + (isCenterCard ? CENTER_EXTRA_HEIGHT : 0);
           const cardClipPath = isCenterCard ? buildClipPath(slot.x, cardHeight) : slot.clipPath;
           const cardZIndex = Math.max(10, 20 - Math.min(10, Math.round(Math.abs(offset) * 3)));
+          const [red, green, blue] = project.colorCard;
 
           return (
             <div
@@ -263,13 +285,27 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
               aria-hidden={!interactive}
               onClick={() => {
                 if (!interactive) return;
+                if (Math.abs(offset) < 0.5) {
+                  onOpenProject(project);
+                  return;
+                }
                 if (offset < 0) rotate(-1);
                 if (offset > 0) rotate(1);
+              }}
+              onMouseEnter={() => {
+                if (Math.abs(offset) < 0.5) animateCenterCard(project.id, true);
+              }}
+              onMouseLeave={() => {
+                if (Math.abs(offset) < 0.5) animateCenterCard(project.id, false);
               }}
               onKeyDown={(event) => {
                 if (!interactive) return;
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
+                  if (Math.abs(offset) < 0.5) {
+                    onOpenProject(project);
+                    return;
+                  }
                   if (offset < 0) rotate(-1);
                   if (offset > 0) rotate(1);
                 }
@@ -282,15 +318,25 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
               }}
             >
               <div
-                className="relative overflow-hidden border border-white/10"
+                ref={(node) => {
+                  cardHoverRefs.current[project.id] = node;
+                }}
+                className="relative"
+                style={{ transformOrigin: '50% 50%' }}
+              >
+              <div
+                className="relative"
                 style={{
                   width: CARD_W,
                   height: cardHeight,
                   transform: `perspective(980px) translate3d(${slot.x}px, 0px, ${slot.z}px) rotateY(${slot.ry}deg) scale(${slot.scale})`,
-                  clipPath: cardClipPath,
+                  boxShadow: `0 0 24px rgba(${red},${green},${blue},0.34), 0 22px 56px rgba(0,0,0,0.5)`,
                 }}
               >
-                <div className="relative h-full w-full">
+                <div
+                  className="relative h-full w-full overflow-hidden border border-white/10"
+                  style={{ clipPath: cardClipPath }}
+                >
                   <BrowserCard {...project} />
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.2),transparent_44%)]" />
                   {slot.ry !== 0 && (
@@ -306,6 +352,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
                   )}
                 </div>
               </div>
+              </div>
             </div>
           );
         })}
@@ -313,7 +360,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
           type="button"
           aria-label="Previous"
           onClick={() => rotate(-1)}
-          className="absolute left-3 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
+          className="absolute left-4 sm:left-8 md:left-24 lg:left-70 xl:left-80 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
           style={{
             background: `${colors.green}1A`,
             border: `2px solid ${colors.green}`,
@@ -327,7 +374,7 @@ export default function ConcaveBezierCarousel({ projects }: { projects: Project3
           type="button"
           aria-label="Next"
           onClick={() => rotate(1)}
-          className="absolute right-3 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
+          className="absolute right-4 sm:right-8 md:right-24 lg:right-70 xl:right-80 top-[-50px] z-40 h-11 w-11 -translate-y-1/2 text-base transition"
           style={{
             background: `${colors.green}1A`,
             border: `2px solid ${colors.green}`,

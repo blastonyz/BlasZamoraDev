@@ -61,14 +61,14 @@ body {
 }
 
 .bg-grid-pattern {
-  background-image: linear-gradient(to right, #1f2937 2px, transparent 2px), 
-                    linear-gradient(to bottom, #1f2937 2px, transparent 2px);
+  background-image: linear-gradient(to right, rgba(0, 255, 157, 0.18) 2px, transparent 2px), 
+                    linear-gradient(to bottom, rgba(0, 231, 231, 0.14) 2px, transparent 2px);
 }
 
 /* Grid Glow Effect - Activated by scroll */
 .bg-grid.active-glow {
   box-shadow: 
-    inset 0 0 120px rgba(0, 255, 157, 0.15),
-    inset 0 0 60px rgba(0, 255, 255, 0.1),
-    0 0 40px rgba(0, 255, 157, 0.2);
+    inset 0 0 160px rgba(0, 255, 157, 0.22),
+    inset 0 0 90px rgba(0, 255, 255, 0.14),
+    0 0 56px rgba(0, 255, 157, 0.28);
 }
