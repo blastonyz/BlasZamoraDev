@@ -105,7 +105,7 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
   return (
     <div className="relative w-full">
       {/* Title */}
-      <div className="text-center mb-[5px]">
+      <div className="text-center mb-0">
         <h2
           className={`text-5xl md:text-7xl font-bold mb-6 ${orbitron.className}`}
           style={{
@@ -121,7 +121,9 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
         <p className="text-gray-400 text-lg max-w-2xl mx-auto">
           Featured work and recent developments
         </p>
-        <p
+        <button
+          type="button"
+          onClick={() => onOpenProject(projects[activeIndex])}
           className={`mx-auto mt-4 text-xl tracking-[0.08em] sm:text-2xl ${orbitron.className}`}
           style={{
             backgroundImage: gradientStyle,
@@ -129,15 +131,51 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
             backgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             color: 'transparent',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'block',
           }}
         >
-          {projects[activeIndex]?.title}
-        </p>
+          {projects[activeIndex]?.title} ›
+        </button>
+
       </div>
+
+      {/* Action Buttons */}
+      <div className="mb-4 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => onOpenProject(projects[activeIndex])}
+            className={`border px-4 py-3 text-[12px] tracking-[0.22em] text-white/85 ${orbitron.className}`}
+            style={{
+              borderColor: `${colors.green}66`,
+              background: `${colors.green}10`,
+              boxShadow: shadows.sm,
+            }}
+          >
+            VIEW DETAILS
+          </button>
+          {projects[activeIndex]?.live && (
+            <a
+              href={projects[activeIndex].live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`border px-4 py-3 text-[12px] tracking-[0.22em] text-white/85 ${orbitron.className}`}
+              style={{
+                borderColor: `${colors.green}66`,
+                background: `${colors.green}10`,
+                boxShadow: shadows.sm,
+              }}
+            >
+              LIVE ↗
+            </a>
+          )}
+        </div>
 
       {/* Carousel Container */}
       <div
-        className="relative h-[560px] sm:h-[600px] w-full overflow-hidden rounded-2xl"
+        className="relative h-[560px] sm:h-[640px] w-full overflow-hidden rounded-2xl mt-[30px]"
         style={{ touchAction: 'pan-y' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -149,10 +187,11 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
           style={{
             perspective: '1000px',
             perspectiveOrigin: 'center 50%',
+            paddingTop: '35px',
           }}
         >
           <div
-            className="relative flex items-center justify-center"
+            className="relative flex items-center justify-center pt-4"
             style={{
               transformStyle: 'preserve-3d',
             }}
@@ -175,8 +214,7 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
                   key={project.id}
                   className="absolute transition-all duration-500 ease-out rounded-2xl"
                   onClick={() => {
-                    if (isActive) onOpenProject(project);
-                    else setActiveIndex(index);
+                    if (!isActive) setActiveIndex(index);
                   }}
                   style={{
                     width: '280px',
@@ -198,25 +236,8 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
           </div>
         </div>
 
-        {/* Swipe Hint */}
-        <div
-          className="absolute left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2 rounded-md"
-          style={{
-            bottom: 'calc(1.5rem - 21px)',
-            border: `1px solid ${colors.green}66`,
-            background: `${colors.green}14`,
-            boxShadow: shadows.sm,
-          }}
-        >
-          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>←</span>
-          <span className={`text-[11px] tracking-wider ${orbitron.className}`} style={{ color: `${colors.green}CC` }}>
-            SWIPE
-          </span>
-          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>→</span>
-        </div>
-
         {/* Indicator Dots */}
-        <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 z-50" style={{ top: 'calc(1.5rem - 25px)' }}>
+        <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 z-50" style={{ top: '0px' }}>
           {projects.map((_, index) => (
             <div
               key={index}
@@ -234,23 +255,31 @@ export default function ProjectsMobile({ projects, onOpenProject }: ProjectsMobi
         </div>
       </div>
 
+      {/* Swipe Hint */}
+      <div
+        className="mt-2 flex items-center justify-center"
+      >
+        <div
+          className="z-50 flex items-center gap-3 px-4 py-2 rounded-md"
+          style={{
+            border: `1px solid ${colors.green}66`,
+            background: `${colors.green}14`,
+            boxShadow: shadows.sm,
+          }}
+        >
+          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>←</span>
+          <span className={`text-[11px] tracking-wider ${orbitron.className}`} style={{ color: `${colors.green}CC` }}>
+            SWIPE
+          </span>
+          <span className="text-sm font-bold" style={{ color: `${colors.green}AA` }}>→</span>
+        </div>
+      </div>
+
       {/* Mobile Footer Info */}
       <div className="mt-8 text-center">
         <p className="text-xs text-gray-400">
           {activeIndex + 1} / {projects.length}
         </p>
-        <button
-          type="button"
-          onClick={() => onOpenProject(projects[activeIndex])}
-          className={`mt-4 border px-4 py-3 text-[12px] tracking-[0.22em] text-white/85 ${orbitron.className}`}
-          style={{
-            borderColor: `${colors.green}66`,
-            background: `${colors.green}10`,
-            boxShadow: shadows.sm,
-          }}
-        >
-          VIEW DETAILS
-        </button>
       </div>
     </div>
   );

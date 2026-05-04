@@ -18,17 +18,16 @@ const PROJECTS: Project3DItem[] = [
     image: '/defiar.png',
     url: 'defiar.xyz',
     colorCard: [142, 249, 252],
-    type: 'WEB3 · DEFI EDUCATION',
-    description: 'Interactive DeFi learning platform designed to make advanced onchain concepts tangible for new users. It combines guided product flows, real protocol examples and progressive onboarding to reduce the gap between curiosity and confident participation.',
+    type: 'WEB3 · DEFI',
+    description: 'Implementation of DeFi with GMX perpetuals, with account abstraction, session keys, and AI asistence recomendations. The product is designed to make DeFi more accessible and user-friendly, while also providing advanced features for experienced users.',
     features: [
-      { title: 'LEARNING FLOW', text: 'Step-by-step paths for lending, staking and liquidity concepts.' },
-      { title: 'ONCHAIN UX', text: 'Wallet-aware interface built to explain each action before execution.' },
-      { title: 'SIMULATION', text: 'Safe exploration of DeFi mechanics through guided scenarios.' },
-      { title: 'CONTENT ENGINE', text: 'Modular educational blocks for rapid expansion across protocols.' },
+      { title: 'MANUAL TRANSACTIONS', text: 'You can operate in the same way as in any dApp by signing each transaction.' },
+      { title: 'SESSION KEYS', text: "By activating session keys, along with account abstraction, you won't need to sign each transaction, allowing for smooth operation." },
+      { title: 'AUTO MODE', text: 'An AI agent is hydrated with OHLC data and will recommend an operation based on this data.' }
     ],
     tech: ['Next.js', 'TypeScript', 'Solidity', 'Wagmi', 'Tailwind', 'GSAP'],
-    live: '#',
-    repo: '#',
+    live: 'https://defiar.vercel.app/',
+    repo: 'https://github.com/blastonyz/DefIA-Aleph2026',
   },
   {
     id: 1,
@@ -44,9 +43,9 @@ const PROJECTS: Project3DItem[] = [
       { title: 'ROLES', text: 'Company, verifier and project issuer roles with tailored permissions.' },
       { title: 'STANDARDS', text: 'Support for multiple carbon verification frameworks and reporting layers.' },
     ],
-    tech: ['React', 'Solidity', 'The Graph', 'IPFS', 'ERC-20', 'Hardhat'],
-    live: '#',
-    repo: '#',
+    tech: ['React', 'Solidity', 'ERC-721', 'IPFS', 'ERC-20','ERC-1167', 'Hardhat', 'Tailwind', 'ethers'],
+    live: 'https://hedera-hackathon-ten.vercel.app/',
+    repo: 'https://github.com/blastonyz/Hedera-Hackathon',
   },
   {
     id: 2,
@@ -63,8 +62,8 @@ const PROJECTS: Project3DItem[] = [
       { title: 'COORDINATION', text: 'Participant tooling aimed at clarity across growing communities.' },
     ],
     tech: ['Next.js', 'Solidity', 'GraphQL', 'TypeScript', 'Wagmi', 'Tailwind'],
-    live: '#',
-    repo: '#',
+    live: 'https://avalanche-two.vercel.app/',
+    repo: 'https://github.com/blastonyz/Avalanche',
   },
   {
     id: 3,
@@ -81,8 +80,8 @@ const PROJECTS: Project3DItem[] = [
       { title: 'GLOBAL PLAY', text: 'Support for distributed players, teams and competitive flows.' },
     ],
     tech: ['React', 'Node.js', 'PostgreSQL', 'WebSockets', 'Redis', 'GSAP'],
-    live: '#',
-    repo: '#',
+    live: 'https://road-to-pro.vercel.app/',
+    repo: 'https://github.com/blastonyz/RoadToPro',
   },
   {
     id: 4,
@@ -98,9 +97,9 @@ const PROJECTS: Project3DItem[] = [
       { title: 'MEMBERSHIP', text: 'Tiered access model for premium resources and experiences.' },
       { title: 'DONATIONS', text: 'Community support system for sustaining the initiative.' },
     ],
-    tech: ['Next.js', 'Tailwind', 'Stripe', 'CMS', 'TypeScript'],
-    live: '#',
-    repo: '#',
+    tech: ['Next.js', 'Tailwind', 'TypeScript', 'NextAuth'],
+    live: 'https://fundacion-sanar.vercel.app/',
+    repo: 'https://github.com/blastonyz/Fundacion-Sanar',
   },
   {
     id: 5,
@@ -117,8 +116,8 @@ const PROJECTS: Project3DItem[] = [
       { title: 'CONTACT', text: 'Direct channel to sales representatives and technical support.' },
     ],
     tech: ['React', 'Node.js', 'MongoDB', 'REST API', 'Tailwind'],
-    live: '#',
-    repo: '#',
+    live: 'https://www.tuagro.com.ar/',
+    repo: 'https://github.com/blastonyz/TuAgro',
   },
 ];
 
@@ -151,7 +150,7 @@ export default function Projects({ contentRef }: ProjectsProps) {
     return (
       <div className="projects-container relative w-full bg-transparent mb-[5px]">
         <section id="projects" className="relative z-10 flex items-start justify-center pt-0 px-4 sm:px-8">
-          <div className="w-full max-w-3xl">
+          <div className="w-full max-w-3xl mt-4">
             <ProjectsMobile
               projects={PROJECTS}
               onOpenProject={(project) => {
