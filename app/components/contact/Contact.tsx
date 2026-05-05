@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { orbitron, colors } from '../../lib/theme';
 
 const CONTACT_LINKS = [
@@ -20,6 +21,59 @@ const border = 'rgba(0,255,178,0.12)';
 const borderBright = 'rgba(0,255,178,0.35)';
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    project: '',
+    message: '',
+  });
+  const [isSending, setIsSending] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const handleFieldChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.currentTarget;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setIsSending(true);
+    setStatus('idle');
+    setStatusMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Could not send your message');
+      }
+
+      setStatus('success');
+      setStatusMessage('Message sent successfully. I will get back to you soon.');
+      setFormData({ name: '', email: '', project: '', message: '' });
+    } catch (error) {
+      setStatus('error');
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unexpected error while sending the form'
+      );
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
     <>
       {/* ═══ CONTACT ═══════════════════════════════════════ */}
@@ -88,7 +142,7 @@ export default function Contact() {
           {/* Right — form */}
           <form
             className="flex flex-col gap-5"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
           >
             {FORM_FIELDS.map((field) => (
               <div key={field.name} className="flex flex-col gap-2">
@@ -100,6 +154,8 @@ export default function Contact() {
                     name={field.name}
                     placeholder={field.placeholder}
                     rows={5}
+                    value={formData[field.name as keyof typeof formData]}
+                    onChange={handleFieldChange}
                     className="resize-none border bg-[#0A1F19] px-[18px] py-[14px] text-[15px] text-[#C8F0E8] outline-none transition-colors placeholder:text-[#2A4A40]"
                     style={{ borderColor: border }}
                     onFocus={(e) => (e.currentTarget.style.borderColor = borderBright)}
@@ -110,6 +166,8 @@ export default function Contact() {
                     type={field.type}
                     name={field.name}
                     placeholder={field.placeholder}
+                    value={formData[field.name as keyof typeof formData]}
+                    onChange={handleFieldChange}
                     className="border bg-[#0A1F19] px-[18px] py-[14px] text-[15px] text-[#C8F0E8] outline-none transition-colors placeholder:text-[#2A4A40]"
                     style={{ borderColor: border }}
                     onFocus={(e) => (e.currentTarget.style.borderColor = borderBright)}
@@ -121,14 +179,26 @@ export default function Contact() {
 
             <button
               type="submit"
+              disabled={isSending}
               className={`w-full border-none py-4 text-[11px] font-bold tracking-[0.3em] text-[#030D0A] transition-all hover:-translate-y-0.5 hover:bg-white ${orbitron.className}`}
               style={{
                 background: colors.green,
                 clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)',
+                opacity: isSending ? 0.7 : 1,
+                cursor: isSending ? 'wait' : 'pointer',
               }}
             >
-              INITIATE TRANSMISSION →
+              {isSending ? 'SENDING...' : 'INITIATE TRANSMISSION →'}
             </button>
+
+            {status !== 'idle' && (
+              <p
+                className="text-sm"
+                style={{ color: status === 'success' ? colors.green : '#FF8A8A' }}
+              >
+                {statusMessage}
+              </p>
+            )}
           </form>
         </div>
       </section>

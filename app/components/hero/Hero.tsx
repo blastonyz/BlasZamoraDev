@@ -161,7 +161,7 @@ export default function Hero() {
 
       {/* Hero Section */}
       <section className="relative z-10 min-h-[85vh] flex flex-col items-center mx-4">
-        <div className="max-w-7xl mx-10 px-4 mt-16 w-full sm:px-6 md:mt-16 flex-1 flex items-center">
+        <div className="max-w-7xl mx-10 px-4 mt-20 w-full sm:px-6 md:mt-16 flex-1 flex items-center">
           <div className="flex flex-col lg:flex-row justify-center lg:justify-between gap-4 lg:gap-16 w-full">
             {/* Left Content */}
             <div className="w-full lg:flex-1 text-center lg:text-left lg:max-w-xl lg:pt-12 order-2 lg:order-1">

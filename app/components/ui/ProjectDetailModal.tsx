@@ -79,7 +79,7 @@ export default function ProjectDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex bg-[rgba(3,13,10,0.95)] backdrop-blur-md mt-14"
+      className="fixed inset-0 z-[200] flex bg-[rgba(3,13,10,0.95)] backdrop-blur-md mt-9 md:mt-14"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
